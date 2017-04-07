@@ -11,7 +11,9 @@ endif
 set nocompatible
 filetype off                  " required
 filetype plugin indent on    " required
-
+" filetype plugin on
+runtime macros/matchit.vim
+" packadd! matchit
 " vim 自身命令行模式智能补全
 set wildmenu
 " 开启行号显示
@@ -39,8 +41,9 @@ nnoremap <C-H> <C-W><C-H>
 cnoremap <C-p> <Up>
 cnoremap <C-n> <Down>
 
-"set t_Co=256
+set t_Co=256
 let mapleader=","
+noremap \ ,
 "set formatoptions=tcqmM
 "set wrap
 " ========================for python =============================
@@ -55,11 +58,12 @@ au BufNewFile,BufRead *.py
 
 "au BufNewFile,BufRead *.py, *.pyw, *.c, *.h match BadWhitespace /\s\+$/
 
-au BufNewFile,BufRead *.js, *.html, *.css
+au BufNewFile,BufRead *.js,*.html,*.css
   \ set tabstop=2 |
   \ set softtabstop=2 |
   \ set shiftwidth=2
 
+au BufRead,BufNewFile * if &l:modifiable | setlocal fileformat=unix | endif
 set encoding=utf-8
 
 command Td noautocmd vimgrep /TODO/j ** | cw
@@ -79,7 +83,7 @@ Plugin 'Rykka/riv.vim'
 Plugin 'Rykka/InstantRst'
 Plugin 'tpope/vim-surround'
 Plugin 'Townk/vim-autoclose'
-Plugin 'drmingdrmer/xptemplate'
+" Plugin 'drmingdrmer/xptemplate'
 Plugin 'scrooloose/nerdtree'
 Plugin 'scrooloose/nerdcommenter'
 Plugin 'Shougo/neocomplete.vim'
@@ -87,14 +91,15 @@ Plugin 'Shougo/neocomplete.vim'
 Plugin 'altercation/vim-colors-solarized'
 Plugin 'vim-airline/vim-airline'
 Plugin 'vim-airline/vim-airline-themes'
-" Plugin 'majutsushi/tagbar'
+Plugin 'majutsushi/tagbar'
+" Plugin 'vim-scripts/taglist.vim'
 Plugin 'python-mode/python-mode'
 Plugin 'Valloric/YouCompleteMe'
+Plugin 'davidhalter/jedi-vim'
 Plugin 'tpope/vim-unimpaired'
 " " Keep Plugin commands between vundle#begin/end.
 " " All of your Plugins must be added before the following line
 call vundle#end()            " required
-
 
 " allow backspacing over everything in insert mode
 set backspace=indent,eol,start
@@ -173,9 +178,7 @@ if !exists(":DiffOrig")
 		  \ | wincmd p | diffthis
 endif
 
-
 " ==================== neocomplete=======================
-"
 " Disable AutoComplPop.
 let g:acp_enableAtStartup = 0
 " Use neocomplete.
@@ -239,7 +242,7 @@ autocmd VimEnter * NERDTree
 " 设置NERDTree子窗口宽度
 let NERDTreeWinSize=32
 " 设置NERDTree子窗口位置
-let NERDTreeWinPos="right"
+let NERDTreeWinPos="left"
 " 显示隐藏文件
 let NERDTreeShowHidden=1
 " NERDTree 子窗口中不显示冗余帮助信息
@@ -296,20 +299,46 @@ endif
 
 " =============================tagbar=================================
 "
-nmap <F8> :TagbarToggle<CR>
+nnoremap <silent> <Leader>tb :TagbarToggle<CR>
+let g:tagbar_ctags_bin = 'ctags'
+let g:tagbar_width = 30
+autocmd VimEnter * nested :TagbarOpen
 
 " ==============================CTags==================================  
-let Tlist_Sort_Type = "name"    " 按照名称排序  
-let Tlist_Use_Right_Window = 1  " 在右侧显示窗口  
-let Tlist_Compart_Format = 1    " 压缩方式  
-let Tlist_Exist_OnlyWindow = 1  " 如果只有一个buffer，kill窗口也kill掉buffer  
 "设置tags  
 set tags=tags;  
 set autochdir
+" 按下F5重新生成tag文件，并更新taglist
+map <F5> :!ctags -R --c++-kinds=+p --fields=+iaS --extra=+q .<CR><CR> :TlistUpdate<CR>
+imap <F5> <ESC>:!ctags -R --c++-kinds=+p --fields=+iaS --extra=+q .<CR><CR> :TlistUpdate<CR>
+
+" =============================taglist==================================
+" let Tlist_Ctags_Cmd='ctags'  "因为我们放在环境变量里，所以可以直接执行
+" let Tlist_Use_Right_Window=1 "让窗口显示在右边，0的话就是显示在左边
+" let Tlist_Auto_Open=1    "在启动VIM后，自动打开taglist窗口
+" let Tlist_Exit_OnlyWindow=1 "当taglist是最后一个分割窗口时，自动推出vim
+" let Tlist_Show_One_File=0 "让taglist可以同时展示多个文件的函数列表
+" let Tlist_File_Fold_Auto_Close=1 "非当前文件，函数列表折叠隐藏
+" " 是否一直处理tags.1:处理;0:不处理
+" let Tlist_Process_File_Always=1 "实时更新tags, 不管taglist窗口有没有打开
+" let Tlist_Inc_Winwidth=0
+" let Tlist_Use_SingleClick= 1  "缺省情况下，在双击一个tag时，才会跳到该tag定义的位置
+" let Tlist_Sort_Type="name"   " tag按名字排序
+" let Tlist_Compart_Format = 1    " 压缩方式
+" nnoremap <silent> <leader>tl :TlistToggle<CR>
 
 " ============================python-mode===============================
 let g:pymode_breakpoint = 1
 let g:pymode_breakpoint_bind = '<leader>b'
+let g:pymode_rope = 0
+let g:pymode_rope_autoimport = 0
+
+" ============================jedi-vim===============================
+" unable automatically initialized
+" let g:jedi#auto_initialization = 0
+" unable jedi-vim completion
+" let g:jedi#completions_enabled = 0
+let g:jedi#completions_command = "<leader><Space>"
 
 " ============================YouCompleteMe===============================
 let g:ycm_python_binary_path = 'python'
@@ -356,3 +385,29 @@ let g:syntastic_ignore_files = [".*\.py$"]
 " ============================riv===============================
 let proj1 = { 'path': '~/Documents/reST_note/index.rst',}
 let g:riv_projects = [proj1]
+
+"==========================Quick Run=============================
+map <F5> :call CompileRunGcc()<CR>
+func! CompileRunGcc()
+	exec "w"
+	if &filetype == 'c'
+		exec "!g++ % -o %<"
+		exec "!time ./%<"
+	elseif &filetype =='cpp'
+		exec "!g++ % -o %<"
+		exec "!time ./%<"
+	elseif &filetype == 'java'
+		exec "!javac %"
+		exec "!time java %<"
+	elseif &filetype == 'sh'
+		:!time bash %
+	elseif &filetype == 'python'
+		exec "!time python2.7 %"
+	elseif &filetype == 'html'
+		exec "!firefox % &"
+	elseif &filetype == 'go'
+		" exec "!go build %<"
+		exec "!time go run %"
+	endif
+endfunc
+
