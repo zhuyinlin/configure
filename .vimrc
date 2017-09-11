@@ -9,8 +9,12 @@ endif
 " Use Vim settings, rather than Vi settings (much better!).
 " This must be first, because it changes other options as a side effect.
 set nocompatible
-filetype off                  " required
-filetype plugin indent on    " required
+" 设定文件浏览器目录为当前目录  
+set bsdir=buffer  
+" 设置文件编码  
+set fenc=utf-8 
+filetype off  " required
+filetype plugin indent on  " required
 " filetype plugin on
 runtime macros/matchit.vim
 " packadd! matchit
@@ -18,6 +22,8 @@ runtime macros/matchit.vim
 set wildmenu
 " 开启行号显示
 set number
+"Show related row numbers
+set relativenumber
 " 高亮显示当前行/列
 set cursorline
 set cursorcolumn
@@ -45,7 +51,19 @@ set t_Co=256
 let mapleader=","
 noremap \ ,
 "set formatoptions=tcqmM
-"set wrap
+set wrap
+
+" ========================C++ =============================
+au BufNewFile,BufRead *.c,*.cpp,*.h
+  \ set tabstop=4 |
+  \ set softtabstop=4 |
+  \ set shiftwidth=4 |
+  \ set textwidth=79 |
+  \ set expandtab |
+  \ set autoindent |
+  \ set fileformat=unix |
+  \ set cindent 
+
 " ========================for python =============================
 au BufNewFile,BufRead *.py
   \ set tabstop=4 |
@@ -58,13 +76,18 @@ au BufNewFile,BufRead *.py
 
 "au BufNewFile,BufRead *.py, *.pyw, *.c, *.h match BadWhitespace /\s\+$/
 
+" ========================for reStructuredText =============================
+au BufNewFile,BufRead *.rs
+  \set textwidth=79
+  
+
+" ========================for javascript =============================
 au BufNewFile,BufRead *.js,*.html,*.css
   \ set tabstop=2 |
   \ set softtabstop=2 |
   \ set shiftwidth=2
 
 au BufRead,BufNewFile * if &l:modifiable | setlocal fileformat=unix | endif
-set encoding=utf-8
 
 command Td noautocmd vimgrep /TODO/j ** | cw
 command Fx noautocmd vimgrep /FIXME/j ** | cw
@@ -78,25 +101,53 @@ call vundle#begin()
 "
 " " let Vundle manage Vundle, required
 Plugin 'VundleVim/Vundle.vim'
-" the 2 plugin bellow is for reStructured Text
+
+" Plugins for reStructured Text
 Plugin 'Rykka/riv.vim'
 Plugin 'Rykka/InstantRst'
-Plugin 'tpope/vim-surround'
-Plugin 'Townk/vim-autoclose'
+
+"auto complete
+Plugin 'Shougo/neocomplete.vim'
+Plugin 'Valloric/YouCompleteMe'
+Plugin 'davidhalter/jedi-vim'
+Plugin 'SirVer/ultisnips'
+Plugin 'honza/vim-snippets'
 " Plugin 'drmingdrmer/xptemplate'
+
+" python
+Plugin 'python-mode/python-mode'
+
+" git 
+Plugin 'tpope/vim-fugitive'
+Plugin 'airblade/vim-gitgutter'
+Plugin 'Xuyuanp/nerdtree-git-plugin'
+
+" window
+Plugin 'majutsushi/tagbar'
+" Plugin 'vim-scripts/taglist.vim'
+Plugin 'ervandew/supertab'
 Plugin 'scrooloose/nerdtree'
 Plugin 'scrooloose/nerdcommenter'
-Plugin 'Shougo/neocomplete.vim'
+Plugin 'tiagofumo/vim-nerdtree-syntax-highlight'
+Plugin 'flazz/vim-colorschemes'
 "Plugin 'tomasr/molokai'
 Plugin 'altercation/vim-colors-solarized'
 Plugin 'vim-airline/vim-airline'
 Plugin 'vim-airline/vim-airline-themes'
-Plugin 'majutsushi/tagbar'
-" Plugin 'vim-scripts/taglist.vim'
-Plugin 'python-mode/python-mode'
-Plugin 'Valloric/YouCompleteMe'
-Plugin 'davidhalter/jedi-vim'
+Plugin 'mhinz/vim-startify'
+Plugin 'nathanaelkane/vim-indent-guides'
+Plugin 'ryanoasis/vim-devicons'
+ 
+" coding
+Plugin 'jiangmiao/auto-pairs'
+" Plugin 'Townk/vim-autoclose'
+Plugin 'tpope/vim-surround'
 Plugin 'tpope/vim-unimpaired'
+Plugin 'easymotion/vim-easymotion'
+
+Plugin 'neomake/neomake'
+Plugin 'ctrlpvim/ctrlp.vim' 
+
 " " Keep Plugin commands between vundle#begin/end.
 " " All of your Plugins must be added before the following line
 call vundle#end()            " required
@@ -178,6 +229,77 @@ if !exists(":DiffOrig")
 		  \ | wincmd p | diffthis
 endif
 
+"improve autocomplete menu color
+highlight Pmenu ctermbg=238 gui=bold
+
+" tab navigation like zsh
+:nmap <leader>h :tabprevious<CR>
+:nmap <leader>l :tabnext<CR>
+" ====================== startify ====================
+set viminfo='100,n$HOME/.vim/files/info/viminfo
+"设置书签
+" let g:startify_bookmarks            = [
+"             \ '~/Project/test.cpp',
+"             \]
+"起始页显示的列表长度
+let g:startify_files_number = 20
+"自动加载session
+let g:startify_session_autoload = 1
+"过滤列表，支持正则表达式
+" let g:startify_skiplist = [
+"        \ '^/tmp',
+"        \ ]
+"自定义Header和Footer
+" let g:startify_custom_header = [
+"             \ '+------------------------------+',
+"             \ '|                              |',
+"             \ '|    Still waters run deep!    |',
+"             \ '|                              |',
+"             \ '+----------------+-------------+',
+"             \]
+" let g:startify_custom_footer = [
+"             \ '+------------------------------+',
+"             \ '|     Keep an open mind!       |',
+"             \ '+----------------+-------------+',
+"             \]
+"             
+" ====================== snippet ======================
+let g:UltiSnipsExpandTrigger="<leader><tab>"
+let g:UltiSnipsJumpForwardTrigger="<c-b>"
+let g:UltiSnipsJumpBackwardTrigger="<c-z>"
+
+" ====================== supertab ======================
+let g:SuperTabRetainCompletionType="context"
+
+" ======================== neomake =====================
+map <leader>m :Neomake<CR>
+let g:neomake_open_list = 2
+let g:neomake_list_height = 7
+
+" ========================== CtrlP ====================
+if executable('ag')
+  " Use Ag over Grep
+  set grepprg=ag\ --nogroup\ --nocolor
+  " Use ag in CtrlP for listing files.
+  let g:ctrlp_user_command = 'ag %s -l --nocolor -g ""'
+  " Ag is fast enough that CtrlP doesn't need to cache
+  let g:ctrlp_use_caching = 0
+endif
+
+let g:ctrlp_map = '<c-p>'
+let g:ctrlp_custom_ignore = '\.git$\|\.hg$\|\.svn$\|.rvm$'
+let g:ctrlp_working_path_mode=0
+let g:ctrlp_match_window_bottom=1
+let g:ctrlp_max_height=15
+let g:ctrlp_match_window_reversed=0
+let g:ctrlp_mruf_max=500
+let g:ctrlp_follow_symlinks=1
+"use in  edit
+imap <C-A> <C-C><c-p>
+
+set wildignore+=*/tmp/*,*.so,*.swp,*.zip,*.jpg,*.png,*.gif,*.jpeg,.DS_Store  " MacOSX/Linux
+let g:ctrlp_custom_ignore = '\.git$\|\.hg$\|\.svn$'
+
 " ==================== neocomplete=======================
 " Disable AutoComplPop.
 let g:acp_enableAtStartup = 0
@@ -238,7 +360,7 @@ let g:neocomplete#sources#omni#input_patterns.perl = '\h\w*->\h\w*\|\h\w*::'
 " 使用 NERDTree 插件查看工程文件。设置快捷键，速记：file list
 nmap <Leader>fl :NERDTreeToggle<CR>
 " 自启动
-autocmd VimEnter * NERDTree
+" autocmd VimEnter * NERDTree
 " 设置NERDTree子窗口宽度
 let NERDTreeWinSize=32
 " 设置NERDTree子窗口位置
@@ -281,7 +403,12 @@ let g:NERDTrimTrailingWhitespace = 1
 
 set background=dark
 let g:solarized_termcolors=256
-colorscheme solarized "molokai
+colorscheme Tomorrow-Night-Eighties 
+"Zenburn
+"jellybeans
+"gruvbox
+"solarized 
+"molokai
 
 
 " ============================airline===============================
@@ -294,6 +421,7 @@ if isdirectory(expand("~/.vim/bundle/vim-airline-themes/"))
 	" Use the default set of separators with a few customizations
 		let g:airline_left_sep='›' "Slightly fancier than '>'
 		let g:airline_right_sep='‹' "Slightly fancier tha '<'
+                let g:airline_powerline_fonts = 1
 	endif
 endif
 
@@ -302,7 +430,7 @@ endif
 nnoremap <silent> <Leader>tb :TagbarToggle<CR>
 let g:tagbar_ctags_bin = 'ctags'
 let g:tagbar_width = 30
-autocmd VimEnter * nested :TagbarOpen
+" autocmd VimEnter * nested :TagbarOpen
 
 " ==============================CTags==================================  
 "设置tags  
@@ -386,6 +514,16 @@ let g:syntastic_ignore_files = [".*\.py$"]
 let proj1 = { 'path': '~/Documents/reST_note/index.rst',}
 let g:riv_projects = [proj1]
 
+" ========================== vim-devicons ======================
+" - This configuration must be set after nerd, powerline ...
+" Set encoding to UTF-8 to show glyphs
+set encoding=utf8
+" Set Vim font to a Nerd Font
+"set guifont=Droid\ Sans\ Mono\ for\ Powerline\ Plus\ Nerd\ File\ Types\ 11 " linux
+set guifont=Droid\ Sans\ Mono\ for\ Powerline\ Plus\ Nerd\ File\ Types:h11 " mac
+" If you use vim-airline you need this
+" let g:airline_powerline_fonts = 1
+ 
 "==========================Quick Run=============================
 map <F5> :call CompileRunGcc()<CR>
 func! CompileRunGcc()
