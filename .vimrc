@@ -88,9 +88,10 @@ if v:version >= 704
 endif
 Plug 'honza/vim-snippets'
 " Plug 'drmingdrmer/xptemplate'
+Plug 'vim-scripts/DoxygenToolkit.vim'
  
 " syntax
-Plug 'scrooloose/syntastic'
+Plug 'vim-syntastic/syntastic'
 
 " coding
 Plug 'jiangmiao/auto-pairs'
@@ -98,8 +99,17 @@ Plug 'jiangmiao/auto-pairs'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-unimpaired'
 Plug 'easymotion/vim-easymotion'
+Plug 'terryma/vim-multiple-cursors'  " 多行同时编辑
 
-" reStructured Text
+" format
+Plug 'Chiel92/vim-autoformat'
+
+" markdown
+" Plug 'godlygeek/tabular'
+" Plug 'plasticboy/vim-markdown'
+" Plug 'suan/vim-instant-markdown'
+
+" reStructuredText
 Plug 'Rykka/riv.vim'
 Plug 'Rykka/InstantRst'
 
@@ -112,21 +122,29 @@ Plug 'python-mode/python-mode'
 " c
 Plug 'vim-scripts/c.vim', {'for': ['c', 'cpp']}
 Plug 'ludwig/split-manpage.vim'
+Plug 'vim-scripts/a.vim'  " Alternate Files quickly (.c --> .h etc) 
 
 " go
 "" Go Lang Bundle
-" Plug 'fatih/vim-go', {'do': ':GoInstallBinaries'}
+Plug 'fatih/vim-go', {'do': ':GoInstallBinaries'}
 
-" html
+" html, css
 "" HTML Bundle
-" Plug 'hail2u/vim-css3-syntax'
+Plug 'hail2u/vim-css3-syntax'
 " Plug 'gorodinskiy/vim-coloresque'
 " Plug 'tpope/vim-haml'
-" Plug 'mattn/emmet-vim'
+Plug 'mattn/emmet-vim'
 
 " javascript
 "" Javascript Bundle
-Plug 'jelera/vim-javascript-syntax'
+" Plug 'jelera/vim-javascript-syntax'
+Plug 'pangloss/vim-javascript'
+
+" React Native
+Plug 'mxw/vim-jsx'
+" Plug 'sbdchd/neoformat'
+" Plug 'flowtype/vim-flow'
+Plug 'justinj/vim-react-snippets' "new
 
 " lisp
 "" Lisp Bundle
@@ -147,14 +165,14 @@ Plug 'jelera/vim-javascript-syntax'
 " Plug 'arnaud-lb/vim-php-namespace'
 
 " ruby
-" Plug 'tpope/vim-rails'
-" Plug 'tpope/vim-rake'
-" Plug 'tpope/vim-projectionist'
-" Plug 'thoughtbot/vim-rspec'
-" Plug 'ecomba/vim-ruby-refactoring'
-" Plug 'vim-ruby/vim-ruby'
-" Plug 'tpope/vim-bundler'
-" Plug 'tpope/vim-endwise'
+Plug 'tpope/vim-rails'
+Plug 'tpope/vim-rake'
+Plug 'tpope/vim-projectionist'
+Plug 'thoughtbot/vim-rspec'
+Plug 'ecomba/vim-ruby-refactoring'
+Plug 'vim-ruby/vim-ruby'
+Plug 'tpope/vim-bundler'
+Plug 'tpope/vim-endwise'
 
 
 " rust
@@ -211,7 +229,7 @@ set wildmenu            " vim 自身命令行模式智能补全
 "" Map leader to ,
 let mapleader=","
 
-set wildignore+=*/tmp/*,*.so,*.swp,*.zip,*.pyc,*.db,*.sqlite
+set wildignore+=*/tmp/*,*.so,*.swp,*.swo,*.pyc,*.db,*.sqlite,*.zip,*.tar,*.tar.gz,*.jpg,*.png,*.gif,*.jpeg,*~,.DS_Store  " MacOSX/Linux
 
 "" Directories for swp files
 if has("vms")
@@ -311,7 +329,8 @@ highlight Pmenu ctermbg=238 gui=bold
 if !exists('g:not_finish_vimplug')
 	set background=dark
 	let g:solarized_termcolors=256
-	colorscheme Tomorrow-Night-Eighties 
+	colorscheme Tomorrow-Night-Eighties
+    "Tomorrow-Night-Eighties 
 	"Zenburn
 	"jellybeans
 	"gruvbox
@@ -371,6 +390,8 @@ au BufNewFile,BufRead *.c,*.cpp,*.h
   \ set fileformat=unix |
   \ set cindent 
 
+au BufNewFile,BufRead *.txx set filetype=cpp
+
 "" python 
 au BufNewFile,BufRead *.py
   \ set tabstop=4 |
@@ -394,6 +415,9 @@ au BufNewFile,BufRead *.js,*.html,*.css
   \ set tabstop=2 |
   \ set softtabstop=2 |
   \ set shiftwidth=2
+
+"" for react native
+" autocmd BufWritePre *.js Neoformat
 
 au BufRead,BufNewFile * if &l:modifiable | setlocal fileformat=unix | endif
 
@@ -430,6 +454,9 @@ inoremap <C-U> <C-G>u<C-U>
 " nnoremap <Tab> gt
 " nnoremap <S-Tab> gT
 nnoremap <silent> <S-t> :tabnew<CR>
+" tab navigation like zsh
+" :nmap <leader>h :tabprevious<CR>
+" :nmap <leader>l :tabnext<CR>
 
 "" Set working directory
 " nnoremap <leader>. :lcd %:p:h<CR>
@@ -439,10 +466,6 @@ nnoremap <silent> <S-t> :tabnew<CR>
 
 "" Opens a tab edit command with the path of the currently edited file filled
 " noremap <Leader>te :tabe <C-R>=expand("%:p:h") . "/" <CR>
-
-" tab navigation like zsh
-:nmap <leader>h :tabprevious<CR>
-:nmap <leader>l :tabnext<CR>
 
 command Td noautocmd vimgrep /TODO/j ** | cw
 command Fx noautocmd vimgrep /FIXME/j ** | cw
@@ -608,7 +631,7 @@ endif
 
 let g:ctrlp_map = '<c-p>'
 let g:ctrlp_custom_ignore = '\.git$\|\.hg$\|\.svn$\|.rvm$'
-let g:ctrlp_working_path_mode=0
+let g:ctrlp_working_path_mode='ra' "0
 let g:ctrlp_match_window_bottom=1
 let g:ctrlp_max_height=15
 let g:ctrlp_match_window_reversed=0
@@ -617,8 +640,10 @@ let g:ctrlp_follow_symlinks=1
 "use in  edit
 imap <C-A> <C-C><c-p>
 
-set wildignore+=*/tmp/*,*.so,*.swp,*.zip,*.jpg,*.png,*.gif,*.jpeg,.DS_Store  " MacOSX/Linux
-let g:ctrlp_custom_ignore = '\.git$\|\.hg$\|\.svn$'
+let g:ctrlp_custom_ignore = {
+    \ 'dir':  '\v[\/](node_modules)|(\.(git|hg|svn|rvm))$',
+    \ 'file': '\v\.(exe|so|dll)$',
+    \ }
 
 " =============================tagbar=================================
 "
@@ -715,9 +740,9 @@ nnoremap <F6> :YcmForceCompileAndDiagnostics<CR>
 nmap <leader>gd :YcmDiags<CR>
 inoremap <leader><leader> <C-x><C-o>
 if g:vim_bootstrap_editor == 'nvim'
-    let g:ycm_global_ycm_extra_conf = '~/.config/nvim/plugged/youcompleteme/third_party/ycmd/cpp/ycm/.ycm_extra_conf.py'
+    let g:ycm_global_ycm_extra_conf = '~/.local/share/nvim/plugged/YouCompleteMe/third_party/ycmd/cpp/ycm/.ycm_extra_conf.py'
 else
-    let g:ycm_global_ycm_extra_conf = '~/.vim/plugged/youcompleteme/third_party/ycmd/cpp/ycm/.ycm_extra_conf.py'
+    let g:ycm_global_ycm_extra_conf = '~/.vim/plugged/YouCompleteMe/third_party/ycmd/cpp/ycm/.ycm_extra_conf.py'
 endif
 " 不显示开启vim时检查ycm_extra_conf文件的信息  
 let g:ycm_confirm_extra_conf=0
@@ -757,11 +782,26 @@ let g:syntastic_style_error_symbol = '✗'
 let g:syntastic_style_warning_symbol = '⚠'
 let g:syntastic_auto_loc_list=1
 let g:syntastic_aggregate_errors = 1
+let g:syntastic_check_on_open = 1
+let g:syntastic_check_on_wq = 1
+
 let g:syntastic_python_checkers=['python', 'flake8']
 
+let g:syntastic_javascript_checkers = ['eslint']
+let g:syntastic_rst_checkers=['']  "sphinx for reStructuredText
+
+" ==========================vim-autoformat======================
+
+au BufWrite * :Autoformat "自动格式化代码， 针对所有文件
+let g:autoformat_autoindent = 0
+let g:autoformat_retab = 0
+let g:autoformat_remove_trailing_spaces = 0
+
 " ============================riv===============================
-let proj1 = { 'path': '~/Documents/reST_note/index.rst',}
-let g:riv_projects = [proj1]
+let proj1 = { 'path': '~/Documents/reST_note',}
+let proj2 = { 'path': '~/Documents/EmilyNotes',}
+let proj3 = { 'path': '~/Documents/LxhDoc',}
+let g:riv_projects = [proj2]
 
 " ============================jedi-vim===============================
 let g:jedi#popup_on_dot = 0
@@ -769,7 +809,7 @@ let g:jedi#popup_on_dot = 0
 " let g:jedi#auto_initialization = 0
 " unable jedi-vim completion
 " let g:jedi#completions_enabled = 0
-let g:jedi#completions_command = "<leader><Space>"
+let g:jedi#completions_command = "<Tab>"
 let g:jedi#goto_assignments_command = "<leader>g"
 let g:jedi#goto_definitions_command = "<leader>d"
 let g:jedi#documentation_command = "K"
@@ -784,10 +824,33 @@ let g:pymode_breakpoint_bind = '<leader>b'
 let g:pymode_rope = 0
 let g:pymode_rope_autoimport = 0
 
+" ============================vim-jsx===============================
+let g:jsx_ext_required = 0
+
 " ======================== neomake =====================
 map <leader>m :Neomake<CR>
 let g:neomake_open_list = 2
 let g:neomake_list_height = 7
+
+" ======================== DoxygenToolkit =====================
+let g:DoxygenToolkit_briefTag_funcName = "yes"
+let g:DoxygenToolkit_authorName = "Emily"
+let g:doxygen_enhanced_color = 1
+"let g:load_doxygen_syntax = 1
+
+" for C++ style, change the '@' to '\'
+" let g:DoxygenToolkit_commentType = "C++"
+" let g:DoxygenToolkit_briefTag_pre = "\\brief "
+" let g:DoxygenToolkit_templateParamTag_pre = "\\tparam "
+" let g:DoxygenToolkit_paramTag_pre = "\\param "
+" let g:DoxygenToolkit_returnTag = "\\return "
+" let g:DoxygenToolkit_throwTag_pre = "\\throw " " @exception is also valid
+" let g:DoxygenToolkit_fileTag = "\\file "
+" let g:DoxygenToolkit_dateTag = "\\date "
+" let g:DoxygenToolkit_authorTag = "\\author "
+" let g:DoxygenToolkit_versionTag = "\\version "
+" let g:DoxygenToolkit_blockTag = "\\name "
+" let g:DoxygenToolkit_classTag = "\\class "
 
 " ==================== session management ========================
 " nnoremap <leader>so :OpenSession<Space>
