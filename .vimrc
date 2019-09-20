@@ -56,6 +56,7 @@ Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 Plug 'mhinz/vim-startify'
 Plug 'nathanaelkane/vim-indent-guides'
+
 "" search
 Plug 'ctrlpvim/ctrlp.vim'
 if isdirectory('/usr/local/opt/fzf')
@@ -103,11 +104,12 @@ Plug 'terryma/vim-multiple-cursors'    " 多行同时编辑
 
 " format
 Plug 'Chiel92/vim-autoformat'
+Plug 'AndrewRadev/linediff.vim'
 
 " markdown
-" Plug 'godlygeek/tabular'
-" Plug 'plasticboy/vim-markdown'
-" Plug 'suan/vim-instant-markdown'
+Plug 'godlygeek/tabular'
+Plug 'plasticboy/vim-markdown'
+Plug 'suan/vim-instant-markdown'
 
 " reStructuredText
 Plug 'Rykka/riv.vim'
@@ -119,8 +121,8 @@ Plug 'davidhalter/jedi-vim'
 Plug 'python-mode/python-mode'
 " Plug 'raimon49/requirements.txt.vim', {'for': 'requirements'}
 
-" c
-Plug 'vim-scripts/c.vim', {'for': ['c', 'cpp']}
+" c / c++
+Plug 'vim-scripts/c.vim', {'for': ['c', 'cpp', 'h', 'txx']}
 Plug 'ludwig/split-manpage.vim'
 Plug 'vim-scripts/a.vim'    " Alternate Files quickly (.c --> .h etc)
 
@@ -268,12 +270,12 @@ set relativenumber    " show related row numbers
 
 " In many terminal emulators the mouse works just fine, thus enable it.
 " if has('mouse')
-"   set mouse=a
+"     set mouse=a
 " endif
 set mousemodel=popup    "?
 set t_Co=256
-set guioptions=egmrti   "?
-set gfn=Monospace\ 10   "?
+set guioptions=egmrti    "?
+set gfn=Monospace\ 10    "?
 
 " For Win32 GUI: remove 't' flag from 'guioptions': no tearoff menu entries
 " let &guioptions = substitute(&guioptions, "t", "", "g")
@@ -325,7 +327,7 @@ set showcmd    " display incomplete commands
 "improve autocomplete menu color
 highlight Pmenu ctermbg=238 gui=bold
 
-" =========================solarized=======================
+" ========================== solarized ==========================
 if !exists('g:not_finish_vimplug')
     set background=dark
     let g:solarized_termcolors=256
@@ -466,14 +468,22 @@ nnoremap <silent> <S-t> :tabnew<CR>
 
 "" Opens a tab edit command with the path of the currently edited file filled
 " noremap <Leader>te :tabe <C-R>=expand("%:p:h") . "/" <CR>
+if has("autocmd")
+    " Highlight TODO, FIXME, NOTE, etc.
+    if v:version > 701
+        autocmd Syntax * call matchadd('Todo', '\W\zs\(TODO\|FIXME\|CHANGED\|BUG\|HACK\)')
+        autocmd Syntax * call matchadd('Debug', '\W\zs\(NOTICE\|INFO\|IDEA\)')
+    endif
+endif
 
 command Td noautocmd vimgrep /TODO/j ** | cw
+command Nt noautocmd vimgrep /NOTICE/j ** | cw
 command Fx noautocmd vimgrep /FIXME/j ** | cw
 
 "*****************************************************************************
 "" Plugin configure
 "*****************************************************************************
-" ============================NerdTree================================
+" ========================== NerdTree ==========================
 " 使用 NERDTree 插件查看工程文件。设置快捷键，速记：file list
 nmap <Leader>fl :NERDTreeToggle<CR>
 " 自启动
@@ -495,7 +505,7 @@ let NERDTreeAutoDeleteBuffer=1
 let NERDTreeIgnore = ['\.pyc$', '\.pyo$', '\.obj$', '\.egg$', '^\.git$', '^\.svn$', '\.rbc$', '\.db$', '^\.hg$', '\~$', '\.swp$', '\.swo$', '\.swn$', '\.swm$', '\.orig$']
 let g:NERDTreeSortOrder=['^__\.py$', '\/$', '*', '\.swp$', '\.bak$', '\~$']
 
-" ======================NerdCommenter=================================
+" ========================== NerdCommenter ==========================
 "
 " Add spaces after comment delimiters by default
 let g:NERDSpaceDelims = 1
@@ -520,7 +530,7 @@ let g:NERDCommentEmptyLines = 1
 " Enable trimming of trailing whitespace when uncommenting
 let g:NERDTrimTrailingWhitespace = 1
 
-" ========================  fugiter =============================
+" ========================== fugiter ==========================
 noremap <Leader>ga :Gwrite<CR>
 noremap <Leader>gc :Gcommit<CR>
 noremap <Leader>gsh :Gpush<CR>
@@ -530,7 +540,7 @@ noremap <Leader>gb :Gblame<CR>
 noremap <Leader>gd :Gvdiff<CR>
 noremap <Leader>gr :Gremove<CR>
 
-" ============================airline===============================
+" ========================== airline ==========================
 "
 if isdirectory(expand("~/.vim/bundle/vim-airline-themes/"))
     if !exists('g:airline_theme')
@@ -558,19 +568,19 @@ endif
 if !exists('g:airline_powerline_fonts')
     let g:airline#extensions#tabline#left_sep = ' '
     let g:airline#extensions#tabline#left_alt_sep = '|'
-    let g:airline_left_sep          = '▶'
-    let g:airline_left_alt_sep      = '»'
-    let g:airline_right_sep         = '◀'
-    let g:airline_right_alt_sep     = '«'
-    let g:airline#extensions#branch#prefix     = '⤴' "➔, ➥, ⎇
-    let g:airline#extensions#readonly#symbol   = '⊘'
+    let g:airline_left_sep = '▶'
+    let g:airline_left_alt_sep = '»'
+    let g:airline_right_sep = '◀'
+    let g:airline_right_alt_sep = '«'
+    let g:airline#extensions#branch#prefix = '⤴'    "➔, ➥, ⎇
+    let g:airline#extensions#readonly#symbol = '⊘'
     let g:airline#extensions#linecolumn#prefix = '¶'
-    let g:airline#extensions#paste#symbol      = 'ρ'
-    let g:airline_symbols.linenr    = '␊'
-    let g:airline_symbols.branch    = '⎇'
-    let g:airline_symbols.paste     = 'ρ'
-    let g:airline_symbols.paste     = 'Þ'
-    let g:airline_symbols.paste     = '∥'
+    let g:airline#extensions#paste#symbol = 'ρ'
+    let g:airline_symbols.linenr = '␊'
+    let g:airline_symbols.branch = '⎇'
+    let g:airline_symbols.paste = 'ρ'
+    let g:airline_symbols.paste = 'Þ'
+    let g:airline_symbols.paste = '∥'
     let g:airline_symbols.whitespace = 'Ξ'
 else
     let g:airline#extensions#tabline#left_sep = ''
@@ -586,25 +596,25 @@ else
     let g:airline_symbols.linenr = ''
 endif
 
-" ====================== startify ====================
+" ========================== startify ==========================
 if g:vim_bootstrap_editor == 'vim'
     set viminfo='100,n$HOME/.vim/files/info/viminfo
 else
     " set viminfo='100,n$HOME/.local/share/nvim/shada/main.shada
 endif
-"设置书签
-" let g:startify_bookmarks            = [
+" 设置书签
+" let g:startify_bookmarks = [
 "             \ '~/Project/test.cpp',
 "             \]
-"起始页显示的列表长度
+" 起始页显示的列表长度
 let g:startify_files_number = 20
-"自动加载session
+" 自动加载session
 let g:startify_session_autoload = 1
-"过滤列表，支持正则表达式
+" 过滤列表，支持正则表达式
 " let g:startify_skiplist = [
-"        \ '^/tmp',
-"        \ ]
-"自定义Header和Footer
+"             \ '^/tmp',
+"             \ ]
+" 自定义Header和Footer
 " let g:startify_custom_header = [
 "             \ '+------------------------------+',
 "             \ '|                              |',
@@ -617,9 +627,8 @@ let g:startify_session_autoload = 1
 "             \ '|     Keep an open mind!       |',
 "             \ '+----------------+-------------+',
 "             \]
-"
 
-" ========================== CtrlP ====================
+" ========================== CtrlP ==========================
 if executable('ag')
     " Use Ag over Grep
     set grepprg=ag\ --nogroup\ --nocolor
@@ -645,7 +654,7 @@ let g:ctrlp_custom_ignore = {
             \ 'file': '\v\.(exe|so|dll)$',
             \ }
 
-" =============================tagbar=================================
+" ========================== tagbar ==========================
 "
 nnoremap <silent> <Leader>tb :TagbarToggle<CR>
 let g:tagbar_autofocus = 1
@@ -653,10 +662,10 @@ let g:tagbar_ctags_bin = 'ctags'
 let g:tagbar_width = 30
 " autocmd VimEnter * nested :TagbarOpen
 
-" ====================== supertab ======================
+" ========================== supertab ==========================
 let g:SuperTabRetainCompletionType="context"
 
-" ========================== vim-devicons ======================
+" ========================== vim-devicons ==========================
 " Set encoding to UTF-8 to show glyphs
 set encoding=utf-8
 " Set Vim font to a Nerd Font
@@ -665,7 +674,7 @@ set encoding=utf-8
 " If you use vim-airline you need this
 " let g:airline_powerline_fonts = 1
 
-" ==================== neocomplete=======================
+" ========================== neocomplete ==========================
 " Disable AutoComplPop.
 let g:acp_enableAtStartup = 0
 " Use neocomplete.
@@ -690,8 +699,8 @@ endif
 let g:neocomplete#keyword_patterns['default'] ='\h\w*'
 
 " Plugin key-mappings.
-inoremap <expr><C-g>    neocomplete#undo_completion()
-inoremap <expr><C-l>    neocomplete#complete_common_string()
+inoremap <expr><C-g>  neocomplete#undo_completion()
+inoremap <expr><C-l>  neocomplete#complete_common_string()
 
 " Recommended key-mappings.
 " <CR>: close popup and save indent.
@@ -711,7 +720,7 @@ inoremap <expr><BS> neocomplete#smart_close_popup()."\<C-h>"
 autocmd FileType css setlocal omnifunc=csscomplete#CompleteCSS
 autocmd FileType html,markdown setlocal omnifunc=htmlcomplete#CompleteTags
 autocmd FileType javascript setlocal omnifunc=javascriptcomplete#CompleteJS
-autocmd FileType python setlocal omnifunc=pythoncomplete#Complete
+autocmd FileType python setlocal omnifunc=python3complete#Complete
 autocmd FileType xml setlocal omnifunc=xmlcomplete#CompleteTags
 
 " Enable heavy omni completion.
@@ -721,13 +730,13 @@ endif
 
 let g:neocomplete#sources#omni#input_patterns.perl = '\h\w*->\h\w*\|\h\w*::'
 
-" =========================== vim-polyglot ============================
+" ========================== vim-polyglot ==========================
 " Default highlight is better than polyglot
 let g:polyglot_disabled = ['python']
 
-" ============================YouCompleteMe===============================
+" ========================== YouCompleteMe ==========================
 let g:ycm_python_binary_path = 'python'
-"离开插入模式后自动关闭预览窗口
+" 离开插入模式后自动关闭预览窗口
 autocmd InsertLeave * if pumvisible() == 0|pclose|endif
 " 跳转到定义处
 nnoremap <leader>jd :YcmCompleter GoToDefinitionElseDeclaration<CR>
@@ -735,8 +744,8 @@ nnoremap <leader>jl :YcmCompleter GoToDeclaration<CR>
 nnoremap <leader>jf :YcmCompleter GoToDefinition<CR>
 "force recomile with syntastic
 nnoremap <F6> :YcmForceCompileAndDiagnostics<CR>
-" nnoremap <leader>lo :lopen<CR>    "open locationlist
-" nnoremap <leader>lc :lclose<CR>   "close locationlist
+" nnoremap <leader>lo :lopen<CR>    " open locationlist
+" nnoremap <leader>lc :lclose<CR>    " close locationlist
 nmap <leader>gd :YcmDiags<CR>
 inoremap <leader><leader> <C-x><C-o>
 if g:vim_bootstrap_editor == 'nvim'
@@ -768,13 +777,17 @@ let g:ycm_filetype_blacklist = {
 " python has its own check engine
 let g:syntastic_ignore_files = [".*\.py$"]
 
-" ====================== snippet ======================
+" ========================== snippet ==========================
 let g:UltiSnipsExpandTrigger="<leader><tab>"
 let g:UltiSnipsJumpForwardTrigger="<c-b>"
 let g:UltiSnipsJumpBackwardTrigger="<c-z>"
 let g:UltiSnipsEditSplit="vertical"
 
-" ======================= syntastic ======================
+" ========================== syntastic ==========================
+set statusline+=%#warningmsg#
+set statusline+=%{SyntasticStatuslineFlag()}
+set statusline+=%*
+
 let g:syntastic_always_populate_loc_list=1
 let g:syntastic_error_symbol='✗'
 let g:syntastic_warning_symbol='⚠'
@@ -785,25 +798,25 @@ let g:syntastic_aggregate_errors = 1
 let g:syntastic_check_on_open = 1
 let g:syntastic_check_on_wq = 1
 
-let g:syntastic_python_checkers=['python', 'flake8']
+let g:syntastic_python_checkers=['python', 'flake8']    " python
 
 let g:syntastic_javascript_checkers = ['eslint']
-let g:syntastic_rst_checkers=['']  "sphinx for reStructuredText
+let g:syntastic_rst_checkers = ['sphinx']    " sphinx for reStructuredText
 
-" ==========================vim-autoformat======================
+" ========================== vim-autoformat ==========================
 
-au BufWrite * :Autoformat "自动格式化代码， 针对所有文件
+au BufWrite * :Autoformat    " 自动格式化代码，针对所有文件
 let g:autoformat_autoindent = 0
 let g:autoformat_retab = 0
 let g:autoformat_remove_trailing_spaces = 0
 
-" ============================riv===============================
+" ========================== riv ==========================
 let proj1 = { 'path': '~/Documents/reST_note',}
 let proj2 = { 'path': '~/Documents/EmilyNotes',}
 let proj3 = { 'path': '~/Documents/LxhDoc',}
 let g:riv_projects = [proj2]
 
-" ============================jedi-vim===============================
+" ========================== jedi-vim ==========================
 let g:jedi#popup_on_dot = 0
 " unable automatically initialized
 " let g:jedi#auto_initialization = 0
@@ -818,21 +831,22 @@ let g:jedi#rename_command = "<leader>r"
 let g:jedi#show_call_signatures = "0"
 let g:jedi#smart_auto_mappings = 0
 
-" ============================python-mode===============================
+" ========================== python-mode ==========================
 let g:pymode_breakpoint = 1
 let g:pymode_breakpoint_bind = '<leader>b'
 let g:pymode_rope = 0
 let g:pymode_rope_autoimport = 0
+let g:pymode_breakpoint_cmd = 'import ipdb; ipdb.set_trace()  # Emily BREAKPOINT'
 
-" ============================vim-jsx===============================
+" ========================== vim-jsx ==========================
 let g:jsx_ext_required = 0
 
-" ======================== neomake =====================
+" ========================== neomake ==========================
 map <leader>m :Neomake<CR>
 let g:neomake_open_list = 2
 let g:neomake_list_height = 7
 
-" ======================== DoxygenToolkit =====================
+" ========================== DoxygenToolkit ==========================
 let g:DoxygenToolkit_briefTag_funcName = "yes"
 let g:DoxygenToolkit_authorName = "Emily"
 let g:doxygen_enhanced_color = 1
@@ -852,21 +866,21 @@ let g:doxygen_enhanced_color = 1
 " let g:DoxygenToolkit_blockTag = "\\name "
 " let g:DoxygenToolkit_classTag = "\\class "
 
-" ==================== session management ========================
+" ========================== session management ==========================
 " nnoremap <leader>so :OpenSession<Space>
 " nnoremap <leader>ss :SaveSession<Space>
 " nnoremap <leader>sd :DeleteSession<CR>
 " nnoremap <leader>sc :CloseSession<CR>
 
-" ==============================CTags==================================
-"设置tags
+" ========================== CTags ==========================
+" 设置tags
 set tags=tags;
 set autochdir
 " 按下F5重新生成tag文件，并更新taglist
 map <F5> :!ctags -R --c++-kinds=+p --fields=+iaS --extra=+q .<CR><CR> :TlistUpdate<CR>
 imap <F5> <ESC>:!ctags -R --c++-kinds=+p --fields=+iaS --extra=+q .<CR><CR> :TlistUpdate<CR>
 
-" =============================taglist==================================
+" ========================== taglist ==========================
 " let Tlist_Ctags_Cmd='ctags'  "因为我们放在环境变量里，所以可以直接执行
 " let Tlist_Use_Right_Window=1 "让窗口显示在右边，0的话就是显示在左边
 " let Tlist_Auto_Open=1    "在启动VIM后，自动打开taglist窗口
@@ -881,7 +895,7 @@ imap <F5> <ESC>:!ctags -R --c++-kinds=+p --fields=+iaS --extra=+q .<CR><CR> :Tli
 " let Tlist_Compart_Format = 1    " 压缩方式
 " nnoremap <silent> <leader>tl :TlistToggle<CR>
 
-"==========================Quick Run=============================
+"========================== Quick Run ==========================
 map <F5> :call CompileRunGcc()<CR>
 func! CompileRunGcc()
     exec "w"
@@ -897,7 +911,7 @@ func! CompileRunGcc()
     elseif &filetype == 'sh'
         :!time bash %
     elseif &filetype == 'python'
-        exec "!time python2.7 %"
+        exec "!time python %"
     elseif &filetype == 'html'
         exec "!firefox % &"
     elseif &filetype == 'go'
