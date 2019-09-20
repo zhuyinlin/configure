@@ -93,8 +93,14 @@ Plug 'vim-scripts/DoxygenToolkit.vim'
 
 " syntax
 Plug 'vim-syntastic/syntastic'
+Plug 'w0rp/ale'
 
 " coding
+if v:version >= 800
+    Plug 'ludovicchabant/vim-gutentags'    "索引自动管理
+    Plug 'skywind3000/gutentags_plus'    "索引数据库切换
+    Plug 'skywind3000/vim-preview'    "索引预览
+endif
 Plug 'jiangmiao/auto-pairs'
 " Plug 'Townk/vim-autoclose'
 Plug 'tpope/vim-surround'
@@ -191,7 +197,7 @@ call plug#end()    " required
 "" Basic Setup
 "*****************************************************************************"
 filetype plugin indent on    " required
-" filetype off    " required for vundle, 关闭文件类型侦测
+filetype off    " required for vundle, 关闭文件类型侦测
 
 "" Encoding
 set encoding=utf-8
@@ -263,9 +269,9 @@ let g:session_command_aliases = 1
 
 " Switch syntax highlighting on, when the terminal has colors
 " Also switch on highlighting the last used search pattern.
-syntax on             " 语法高亮
-set ruler             " show the cursor position all the time
-set number            " 开启行号显示
+syntax on    " 语法高亮
+set ruler    " show the cursor position all the time
+set number    " 开启行号显示
 set relativenumber    " show related row numbers
 
 " In many terminal emulators the mouse works just fine, thus enable it.
@@ -331,7 +337,7 @@ highlight Pmenu ctermbg=238 gui=bold
 if !exists('g:not_finish_vimplug')
     set background=dark
     let g:solarized_termcolors=256
-    colorscheme Tomorrow-Night-Eighties
+    colorscheme jellybeans
     "Tomorrow-Night-Eighties
     "Zenburn
     "jellybeans
@@ -548,8 +554,8 @@ if isdirectory(expand("~/.vim/bundle/vim-airline-themes/"))
     endif
     if !exists('g:airline_powerline_fonts')
         " Use the default set of separators with a few customizations
-        let g:airline_left_sep='›' "Slightly fancier than '>'
-        let g:airline_right_sep='‹' "Slightly fancier tha '<'
+        let g:airline_left_sep='›'     " Slightly fancier than '>'
+        let g:airline_right_sep='‹'    " Slightly fancier tha '<'
         let g:airline_powerline_fonts = 1
     endif
 endif
@@ -572,7 +578,7 @@ if !exists('g:airline_powerline_fonts')
     let g:airline_left_alt_sep = '»'
     let g:airline_right_sep = '◀'
     let g:airline_right_alt_sep = '«'
-    let g:airline#extensions#branch#prefix = '⤴'    "➔, ➥, ⎇
+    let g:airline#extensions#branch#prefix = '⤴'    " ➔, ➥, ⎇
     let g:airline#extensions#readonly#symbol = '⊘'
     let g:airline#extensions#linecolumn#prefix = '¶'
     let g:airline#extensions#paste#symbol = 'ρ'
@@ -742,7 +748,7 @@ autocmd InsertLeave * if pumvisible() == 0|pclose|endif
 nnoremap <leader>jd :YcmCompleter GoToDefinitionElseDeclaration<CR>
 nnoremap <leader>jl :YcmCompleter GoToDeclaration<CR>
 nnoremap <leader>jf :YcmCompleter GoToDefinition<CR>
-"force recomile with syntastic
+" force recomile with syntastic
 nnoremap <F6> :YcmForceCompileAndDiagnostics<CR>
 " nnoremap <leader>lo :lopen<CR>    " open locationlist
 " nnoremap <leader>lc :lclose<CR>    " close locationlist
@@ -775,7 +781,7 @@ let g:ycm_filetype_blacklist = {
             \ 'nerdtree' : 1,
             \}
 " python has its own check engine
-let g:syntastic_ignore_files = [".*\.py$"]
+" let g:syntastic_ignore_files = [".*\.py$"]
 
 " ========================== snippet ==========================
 let g:UltiSnipsExpandTrigger="<leader><tab>"
@@ -784,37 +790,60 @@ let g:UltiSnipsJumpBackwardTrigger="<c-z>"
 let g:UltiSnipsEditSplit="vertical"
 
 " ========================== syntastic ==========================
-set statusline+=%#warningmsg#
-set statusline+=%{SyntasticStatuslineFlag()}
-set statusline+=%*
+" set statusline+=%#warningmsg#
+" set statusline+=%{SyntasticStatuslineFlag()}
+" set statusline+=%*
+"
+" let g:syntastic_always_populate_loc_list=1
+" let g:syntastic_error_symbol='✗'
+" let g:syntastic_warning_symbol='⚠'
+" let g:syntastic_style_error_symbol = '✗'
+" let g:syntastic_style_warning_symbol = '⚠'
+" let g:syntastic_auto_loc_list=1
+" let g:syntastic_aggregate_errors = 1
+" let g:syntastic_check_on_open = 0
+" let g:syntastic_check_on_wq = 0
+"
+" let g:syntastic_python_checkers=['pylint', 'flake8']    " python
+"
+" let g:syntastic_javascript_checkers = ['eslint']
+" let g:syntastic_rst_checkers = ['sphinx']    " sphinx for reStructuredText
 
-let g:syntastic_always_populate_loc_list=1
-let g:syntastic_error_symbol='✗'
-let g:syntastic_warning_symbol='⚠'
-let g:syntastic_style_error_symbol = '✗'
-let g:syntastic_style_warning_symbol = '⚠'
-let g:syntastic_auto_loc_list=1
-let g:syntastic_aggregate_errors = 1
-let g:syntastic_check_on_open = 1
-let g:syntastic_check_on_wq = 1
-
-let g:syntastic_python_checkers=['python', 'flake8']    " python
-
-let g:syntastic_javascript_checkers = ['eslint']
-let g:syntastic_rst_checkers = ['sphinx']    " sphinx for reStructuredText
+" ========================== ale ==========================
+" 始终开启标志列
+let g:ale_fix_on_save = 1
+let g:ale_completion_enabled = 1
+let g:ale_sign_column_always = 1
+" let g:airline#extensions#ale#enabled = 1
+let g:ale_open_list=1
+let g:ale_set_highlights = 0
+" 自定义error和warning图标
+let g:ale_sign_error = '✗'
+let g:ale_sign_warning = '⚡'
+" 在vim自带的状态栏中整合ale
+let g:ale_statusline_format = ['✗ %d', '⚡ %d', '✔ OK']
+" 显示Linter名称,出错或警告等相关信息
+let g:ale_echo_msg_error_str = 'E'
+let g:ale_echo_msg_warning_str = 'W'
+let g:ale_echo_msg_format = '[%linter%] %s [%severity%]'
+" 普通模式下，sp前往上一个错误或警告，sn前往下一个错误或警告
+" nmap sp <Plug>(ale_previous_wrap)
+" nmap sn <Plug>(ale_next_wrap)
+" <Leader>s触发/关闭语法检查
+" nmap <Leader>s :ALEToggle<CR>
+" <Leader>d查看错误或警告的详细信息
+" nmap <Leader>d :ALEDetail<CR>
 
 " ========================== vim-autoformat ==========================
 
-au BufWrite * :Autoformat    " 自动格式化代码，针对所有文件
-let g:autoformat_autoindent = 0
-let g:autoformat_retab = 0
-let g:autoformat_remove_trailing_spaces = 0
+" au BufWrite * :Autoformat "自动格式化代码，针对所有文件
+" let g:autoformat_autoindent = 0
+" let g:autoformat_retab = 0
+" let g:autoformat_remove_trailing_spaces = 0
 
 " ========================== riv ==========================
 let proj1 = { 'path': '~/Documents/reST_note',}
-let proj2 = { 'path': '~/Documents/EmilyNotes',}
-let proj3 = { 'path': '~/Documents/LxhDoc',}
-let g:riv_projects = [proj2]
+let g:riv_projects = [proj1]
 
 " ========================== jedi-vim ==========================
 let g:jedi#popup_on_dot = 0
@@ -872,13 +901,52 @@ let g:doxygen_enhanced_color = 1
 " nnoremap <leader>sd :DeleteSession<CR>
 " nnoremap <leader>sc :CloseSession<CR>
 
-" ========================== CTags ==========================
+" ========================== CTags and GTags ==========================
+let g:gutentags_define_advanced_commands = 1
+let $GTAGSLABEL = 'native-pygments'
+let $GTAGSCONF = '/usr/local/share/gtags/gtags.conf'
+" gutentags 搜索工程目录的标志，当前文件路径向上递归直到碰到这些文件/目录名
+let g:gutentags_project_root = ['.root', '.svn', '.git', '.hg', '.project']
+" 所生成的数据文件的名称
+let g:gutentags_ctags_tagfile = '.tags'
+
+" 同时开启 ctags 和 gtags 支持
+let g:gutentags_modules = []
+if executable('ctags')
+    let g:gutentags_modules += ['ctags']
+endif
+if executable('gtags-cscope') && executable('gtags')
+    let g:gutentags_modules += ['gtags_cscope']
+endif
+
+" 将自动生成的 ctags/gtags 文件全部放入 ~/.cache/tags 目录中，避免污染工程目录
+let g:gutentags_cache_dir = expand('~/.cache/tags')
+
+" 配置 ctags 的参数
 " 设置tags
-set tags=tags;
-set autochdir
+" set tags=tags;
+" set autochdir
 " 按下F5重新生成tag文件，并更新taglist
-map <F5> :!ctags -R --c++-kinds=+p --fields=+iaS --extra=+q .<CR><CR> :TlistUpdate<CR>
-imap <F5> <ESC>:!ctags -R --c++-kinds=+p --fields=+iaS --extra=+q .<CR><CR> :TlistUpdate<CR>
+" map <F5> :!ctags -R --c++-kinds=+p --fields=+iaS --extra=+q .<CR><CR> :TlistUpdate<CR>
+" imap <F5> <ESC>:!ctags -R --c++-kinds=+p --fields=+iaS --extra=+q .<CR><CR> :TlistUpdate<CR>
+let g:gutentags_ctags_extra_args = ['--fields=+niazS', '--extra=+q']
+let g:gutentags_ctags_extra_args += ['--c++-kinds=+px']
+let g:gutentags_ctags_extra_args += ['--c-kinds=+px']
+
+" 如果使用 universal ctags 需要增加下面一行
+let g:gutentags_ctags_extra_args += ['--output-format=e-ctags']
+
+" 禁用 gutentags 自动加载 gtags 数据库的行为
+" 避免多个项目数据库相互干扰
+" 使用plus插件解决问题
+let g:gutentags_auto_add_gtags_cscope = 0
+
+" 预览 quickfix 窗口 ctrl-w z 关闭
+" P 预览 大p关闭
+" autocmd FileType qf nnoremap <silent><buffer> <Leader>p :PreviewQuickfix<cr>
+" autocmd FileType qf nnoremap <silent><buffer> <Leader>P :PreviewClose<cr>
+" noremap <Leader>u :PreviewScroll -1<cr>    " 往上滚动预览窗口
+" noremap <leader>d :PreviewScroll +1<cr>    " 往下滚动预览窗口
 
 " ========================== taglist ==========================
 " let Tlist_Ctags_Cmd='ctags'  "因为我们放在环境变量里，所以可以直接执行
@@ -890,12 +958,12 @@ imap <F5> <ESC>:!ctags -R --c++-kinds=+p --fields=+iaS --extra=+q .<CR><CR> :Tli
 " " 是否一直处理tags.1:处理;0:不处理
 " let Tlist_Process_File_Always=1 "实时更新tags, 不管taglist窗口有没有打开
 " let Tlist_Inc_Winwidth=0
-" let Tlist_Use_SingleClick= 1  "缺省情况下，在双击一个tag时，才会跳到该tag定义的位置
+" let Tlist_Use_SingleClick= 1    " 缺省情况下，在双击一个tag时，才会跳到该tag定义的位置
 " let Tlist_Sort_Type="name"    " tag按名字排序
 " let Tlist_Compart_Format = 1    " 压缩方式
 " nnoremap <silent> <leader>tl :TlistToggle<CR>
 
-"========================== Quick Run ==========================
+" ========================== Quick Run ==========================
 map <F5> :call CompileRunGcc()<CR>
 func! CompileRunGcc()
     exec "w"
