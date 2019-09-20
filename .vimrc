@@ -1,43 +1,43 @@
-" Maintainer:	Emily
+" Maintainer: Emily
 
 " This must be first, because it changes other options as a side effect.
 if has('vim_starting')
-  set nocompatible               " 关闭vi兼容
+    set nocompatible    " 关闭vi兼容
 endif
 
 "*****************************************************************************
 "" Vim-PLug core
 "*****************************************************************************
-let g:vim_bootstrap_editor = "vim"				" nvim or vim
+let g:vim_bootstrap_editor = "vim"    " nvim or vim
 
 if g:vim_bootstrap_editor == 'nvim'
-	let vimplug_exists=expand('~/.config/nvim/autoload/plug.vim')
+    let vimplug_exists=expand('~/.config/nvim/autoload/plug.vim')
 else
-	let vimplug_exists=expand('~/.vim/autoload/plug.vim')
+    let vimplug_exists=expand('~/.vim/autoload/plug.vim')
 endif
 
 if !filereadable(vimplug_exists)
-  if !executable("curl")
-    echoerr "You have to install curl or first install vim-plug yourself!"
-    execute "q!"
-  endif
-  echo "Installing Vim-Plug..."
-  echo ""
-  if g:vim_bootstrap_editor == 'nvim' 
-	  silent !\curl -fLo ~/.config/nvim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-  else
-	  silent !\curl -fLo ~/.vim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-  endif
-  let g:not_finish_vimplug = "yes"
+    if !executable("curl")
+        echoerr "You have to install curl or first install vim-plug yourself!"
+        execute "q!"
+    endif
+    echo "Installing Vim-Plug..."
+    echo ""
+    if g:vim_bootstrap_editor == 'nvim'
+        silent !\curl -fLo ~/.config/nvim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+    else
+        silent !\curl -fLo ~/.vim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+    endif
+    let g:not_finish_vimplug = "yes"
 
-  autocmd VimEnter * PlugInstall
+    autocmd VimEnter * PlugInstall
 endif
 
 " Required:
 if g:vim_bootstrap_editor == 'nvim'
-	call plug#begin(expand('~/.local/share/nvim/plugged'))
+    call plug#begin(expand('~/.local/share/nvim/plugged'))
 else
-	call plug#begin(expand('~/.vim/plugged'))
+    call plug#begin(expand('~/.vim/plugged'))
 endif
 
 " ========================== Plug install packages ==========================
@@ -45,7 +45,7 @@ endif
 Plug 'scrooloose/nerdtree'
 Plug 'scrooloose/nerdcommenter'
 Plug 'tiagofumo/vim-nerdtree-syntax-highlight'
-"" git 
+"" git
 Plug 'tpope/vim-fugitive'
 Plug 'airblade/vim-gitgutter'
 Plug 'Xuyuanp/nerdtree-git-plugin'
@@ -57,17 +57,17 @@ Plug 'vim-airline/vim-airline-themes'
 Plug 'mhinz/vim-startify'
 Plug 'nathanaelkane/vim-indent-guides'
 "" search
-Plug 'ctrlpvim/ctrlp.vim' 
+Plug 'ctrlpvim/ctrlp.vim'
 if isdirectory('/usr/local/opt/fzf')
-  Plug '/usr/local/opt/fzf' | Plug 'junegunn/fzf.vim'
+    Plug '/usr/local/opt/fzf' | Plug 'junegunn/fzf.vim'
 else
-  Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --bin' }
-  Plug 'junegunn/fzf.vim'
+    Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --bin' }
+    Plug 'junegunn/fzf.vim'
 endif
 "" terminal?
 let g:make = 'gmake'
 if exists('make')
-	let g:make = 'make'
+    let g:make = 'make'
 endif
 Plug 'Shougo/vimproc.vim', {'do': g:make}
 "" Vim-Session
@@ -76,20 +76,20 @@ Plug 'xolox/vim-session'
 Plug 'majutsushi/tagbar'
 " Plug 'vim-scripts/taglist.vim'
 Plug 'ervandew/supertab'
-Plug 'ryanoasis/vim-devicons' " must be loaded after Nerdtree, powerline ...
+Plug 'ryanoasis/vim-devicons'    " must be loaded after Nerdtree, powerline ...
 
 "auto complete
 Plug 'Shougo/neocomplete.vim'
 Plug 'sheerun/vim-polyglot'
 Plug 'Valloric/YouCompleteMe'
 if v:version >= 704
-  "" Snippets
-  Plug 'SirVer/ultisnips'
+    "" Snippets
+    Plug 'SirVer/ultisnips'
 endif
 Plug 'honza/vim-snippets'
 " Plug 'drmingdrmer/xptemplate'
 Plug 'vim-scripts/DoxygenToolkit.vim'
- 
+
 " syntax
 Plug 'vim-syntastic/syntastic'
 
@@ -99,7 +99,7 @@ Plug 'jiangmiao/auto-pairs'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-unimpaired'
 Plug 'easymotion/vim-easymotion'
-Plug 'terryma/vim-multiple-cursors'  " 多行同时编辑
+Plug 'terryma/vim-multiple-cursors'    " 多行同时编辑
 
 " format
 Plug 'Chiel92/vim-autoformat'
@@ -122,7 +122,7 @@ Plug 'python-mode/python-mode'
 " c
 Plug 'vim-scripts/c.vim', {'for': ['c', 'cpp']}
 Plug 'ludwig/split-manpage.vim'
-Plug 'vim-scripts/a.vim'  " Alternate Files quickly (.c --> .h etc) 
+Plug 'vim-scripts/a.vim'    " Alternate Files quickly (.c --> .h etc)
 
 " go
 "" Go Lang Bundle
@@ -144,7 +144,7 @@ Plug 'pangloss/vim-javascript'
 Plug 'mxw/vim-jsx'
 " Plug 'sbdchd/neoformat'
 " Plug 'flowtype/vim-flow'
-Plug 'justinj/vim-react-snippets' "new
+Plug 'justinj/vim-react-snippets'    "new
 
 " lisp
 "" Lisp Bundle
@@ -183,13 +183,13 @@ Plug 'rust-lang/rust.vim'
 
 Plug 'neomake/neomake'
 
-call plug#end() " required
+call plug#end()    " required
 
 "*****************************************************************************
 "" Basic Setup
 "*****************************************************************************"
-filetype plugin indent on  " required
-" filetype off  " required for vundle, 关闭文件类型侦测
+filetype plugin indent on    " required
+" filetype off    " required for vundle, 关闭文件类型侦测
 
 "" Encoding
 set encoding=utf-8
@@ -198,7 +198,7 @@ set fileencodings=utf-8
 set bomb
 set binary
 if g:vim_bootstrap_editor == 'vim'
-	set ttyfast
+    set ttyfast
 endif
 
 set fileformats=unix,dos,mac
@@ -213,29 +213,29 @@ set shiftwidth=4
 set expandtab
 
 "" Enable hidden buffers
-set hidden          " 允许在有未保存的修改时切换缓冲区
+set hidden    " 允许在有未保存的修改时切换缓冲区
 
 "" Searching
 set hlsearch
-set incsearch		" do incremental searching
+set incsearch    " do incremental searching
 set ignorecase
 set smartcase
 
 "" autocomplete
 " 让Vim的补全菜单行为与一般IDE一致(智能补全,弹出菜单，无歧义时才自动填充)
-set completeopt=longest,menu	
-set wildmenu            " vim 自身命令行模式智能补全
+set completeopt=longest,menu
+set wildmenu    " vim 自身命令行模式智能补全
 
 "" Map leader to ,
 let mapleader=","
 
-set wildignore+=*/tmp/*,*.so,*.swp,*.swo,*.pyc,*.db,*.sqlite,*.zip,*.tar,*.tar.gz,*.jpg,*.png,*.gif,*.jpeg,*~,.DS_Store  " MacOSX/Linux
+set wildignore+=*/tmp/*,*.so,*.swp,*.swo,*.pyc,*.db,*.sqlite,*.zip,*.tar,*.tar.gz,*.jpg,*.png,*.gif,*.jpeg,*~,.DS_Store    " MacOSX/Linux
 
 "" Directories for swp files
 if has("vms")
-  set nobackup		" do not keep a backup file, use versions instead
+    set nobackup    " do not keep a backup file, use versions instead
 else
-  set backup		" keep a backup file
+    set backup    " keep a backup file
 endif
 set noswapfile
 
@@ -247,9 +247,9 @@ endif
 
 " session management
 if g:vim_bootstrap_editor == 'nvim'
-        let g:session_directory = "~/.config/nvim/session"
+    let g:session_directory = "~/.config/nvim/session"
 else
-        let g:session_directory = "~/.vim/session"
+    let g:session_directory = "~/.vim/session"
 endif
 let g:session_autoload = "no"
 let g:session_autosave = "no"
@@ -261,10 +261,10 @@ let g:session_command_aliases = 1
 
 " Switch syntax highlighting on, when the terminal has colors
 " Also switch on highlighting the last used search pattern.
-syntax on               " 语法高亮
-set ruler		        " show the cursor position all the time
-set number              " 开启行号显示
-set relativenumber      " show related row numbers
+syntax on             " 语法高亮
+set ruler             " show the cursor position all the time
+set number            " 开启行号显示
+set relativenumber    " show related row numbers
 
 " In many terminal emulators the mouse works just fine, thus enable it.
 " if has('mouse')
@@ -280,12 +280,12 @@ set gfn=Monospace\ 10   "?
 
 "" Disable the blinking cursor.
 set gcr=a:blinkon0
-set scrolloff=3                 " 光标移动到距离顶部或底部开始滚到距离
+set scrolloff=3    " 光标移动到距离顶部或底部开始滚到距离
 
 "" Status bar
-set laststatus=2                " 显示状态行
+set laststatus=2    " 显示状态行
 if exists("*fugitive#statusline")
-  set statusline+=%{fugitive#statusline()}
+    set statusline+=%{fugitive#statusline()}
 endif
 set statusline=%F%m%r%h%w%=(%{&ff}/%Y)\ (line\ %l\/%L,\ col\ %c)\
 
@@ -302,51 +302,51 @@ set titlestring=%F
 nnoremap n nzzzv
 nnoremap N Nzzzv
 
-set bsdir=buffer        " 设定文件浏览器目录为当前目录  
+set bsdir=buffer    " 设定文件浏览器目录为当前目录
 runtime macros/matchit.vim
 " packadd! matchit
 "
-set cursorline          " 高亮显示当前行
-set cursorcolumn        " 高亮显示当前列
+set cursorline    " 高亮显示当前行
+set cursorcolumn    " 高亮显示当前列
 
 " 基于缩进或语法进行代码折叠(za，打开或关闭当前折叠；zM，关闭所有折叠；zR，打开所有折叠)
 set foldmethod=indent
 set foldmethod=syntax
-set nofoldenable        " 启动 vim 时关闭折叠代码
+set nofoldenable    " 启动 vim 时关闭折叠代码
 
 " 指定屏幕上可以进行分割布局的区域 "
 set splitbelow
 set splitright
 
 " noremap \ ,
-set history=50		" keep 50 lines of command line history
-set showcmd		    " display incomplete commands
+set history=50    " keep 50 lines of command line history
+set showcmd    " display incomplete commands
 
 "improve autocomplete menu color
 highlight Pmenu ctermbg=238 gui=bold
 
-" =========================solarized======================= 
+" =========================solarized=======================
 if !exists('g:not_finish_vimplug')
-	set background=dark
-	let g:solarized_termcolors=256
-	colorscheme Tomorrow-Night-Eighties
-    "Tomorrow-Night-Eighties 
-	"Zenburn
-	"jellybeans
-	"gruvbox
-	"solarized 
-	"molokai
+    set background=dark
+    let g:solarized_termcolors=256
+    colorscheme Tomorrow-Night-Eighties
+    "Tomorrow-Night-Eighties
+    "Zenburn
+    "jellybeans
+    "gruvbox
+    "solarized
+    "molokai
 endif
 
 "*****************************************************************************
 "" Functions
 "*****************************************************************************
 if !exists('*s:setupWrapping')
-  function s:setupWrapping()
-    set wrap
-    set wm=2
-    set textwidth=79
-  endfunction
+    function s:setupWrapping()
+        set wrap
+        set wm=2
+        set textwidth=79
+    endfunction
 endif
 
 "*****************************************************************************
@@ -354,67 +354,67 @@ endif
 "*****************************************************************************
 "" The PC is fast enough, do syntax highlight syncing from start unless 200 lines
 augroup vimrc-sync-fromstart
-  autocmd!
-  autocmd BufEnter * :syntax sync maxlines=200
+    autocmd!
+    autocmd BufEnter * :syntax sync maxlines=200
 augroup END
 
 "" Remember cursor position
 augroup vimrc-remember-cursor-position
-  autocmd!
-  autocmd BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g`\"" | endif
+    autocmd!
+    autocmd BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g`\"" | endif
 augroup END
 
 "" txt
 augroup vimrc-wrapping
-  autocmd!
-  autocmd BufRead,BufNewFile *.txt call s:setupWrapping()
+    autocmd!
+    autocmd BufRead,BufNewFile *.txt call s:setupWrapping()
 augroup END
 
 "" make/cmake
 augroup vimrc-make-cmake
-  autocmd!
-  autocmd FileType make setlocal noexpandtab
-  autocmd BufNewFile,BufRead CMakeLists.txt setlocal filetype=cmake
+    autocmd!
+    autocmd FileType make setlocal noexpandtab
+    autocmd BufNewFile,BufRead CMakeLists.txt setlocal filetype=cmake
 augroup END
 
 set autoread
 
-"" C++ 
+"" C++
 au BufNewFile,BufRead *.c,*.cpp,*.h
-  \ set tabstop=4 |
-  \ set softtabstop=4 |
-  \ set shiftwidth=4 |
-  \ set textwidth=79 |
-  \ set expandtab |
-  \ set autoindent |
-  \ set fileformat=unix |
-  \ set cindent 
+            \ set tabstop=4 |
+            \ set softtabstop=4 |
+            \ set shiftwidth=4 |
+            \ set textwidth=79 |
+            \ set expandtab |
+            \ set autoindent |
+            \ set fileformat=unix |
+            \ set cindent
 
 au BufNewFile,BufRead *.txx set filetype=cpp
 
-"" python 
+"" python
 au BufNewFile,BufRead *.py
-  \ set tabstop=4 |
-  \ set softtabstop=4 |
-  \ set shiftwidth=4 |
-  \ set textwidth=79 |
-  \ set expandtab |
-  \ set autoindent |
-  \ set fileformat=unix
+            \ set tabstop=4 |
+            \ set softtabstop=4 |
+            \ set shiftwidth=4 |
+            \ set textwidth=79 |
+            \ set expandtab |
+            \ set autoindent |
+            \ set fileformat=unix
 
 let python_highlight_all = 1
 "au BufNewFile,BufRead *.py, *.pyw, *.c, *.h match BadWhitespace /\s\+$/
 
-"" for reStructuredText 
+"" for reStructuredText
 au BufNewFile,BufRead *.rs
-  \set textwidth=79
-  
+            \set textwidth=79
 
-"" javascript 
+
+"" javascript
 au BufNewFile,BufRead *.js,*.html,*.css
-  \ set tabstop=2 |
-  \ set softtabstop=2 |
-  \ set shiftwidth=2
+            \ set tabstop=2 |
+            \ set softtabstop=2 |
+            \ set shiftwidth=2
 
 "" for react native
 " autocmd BufWritePre *.js Neoformat
@@ -425,7 +425,7 @@ au BufRead,BufNewFile * if &l:modifiable | setlocal fileformat=unix | endif
 "" Mappings
 "*****************************************************************************
 "" Switching windows
-nnoremap <C-J> <C-W><C-J> 
+nnoremap <C-J> <C-W><C-J>
 nnoremap <C-K> <C-W><C-K>
 nnoremap <C-L> <C-W><C-L>
 nnoremap <C-H> <C-W><C-H>
@@ -533,15 +533,15 @@ noremap <Leader>gr :Gremove<CR>
 " ============================airline===============================
 "
 if isdirectory(expand("~/.vim/bundle/vim-airline-themes/"))
-	if !exists('g:airline_theme')
-		let g:airline_theme = 'solarized'
-	endif
-	if !exists('g:airline_powerline_fonts')
-	" Use the default set of separators with a few customizations
-		let g:airline_left_sep='›' "Slightly fancier than '>'
-		let g:airline_right_sep='‹' "Slightly fancier tha '<'
-                let g:airline_powerline_fonts = 1
-	endif
+    if !exists('g:airline_theme')
+        let g:airline_theme = 'solarized'
+    endif
+    if !exists('g:airline_powerline_fonts')
+        " Use the default set of separators with a few customizations
+        let g:airline_left_sep='›' "Slightly fancier than '>'
+        let g:airline_right_sep='‹' "Slightly fancier tha '<'
+        let g:airline_powerline_fonts = 1
+    endif
 endif
 let g:airline#extensions#syntastic#enabled = 1
 let g:airline#extensions#branch#enabled = 1
@@ -552,38 +552,38 @@ let g:airline#extensions#virtualenv#enabled = 1
 
 "" Convenience variables
 if !exists('g:airline_symbols')
-  let g:airline_symbols = {}
+    let g:airline_symbols = {}
 endif
 
 if !exists('g:airline_powerline_fonts')
-  let g:airline#extensions#tabline#left_sep = ' '
-  let g:airline#extensions#tabline#left_alt_sep = '|'
-  let g:airline_left_sep          = '▶'
-  let g:airline_left_alt_sep      = '»'
-  let g:airline_right_sep         = '◀'
-  let g:airline_right_alt_sep     = '«'
-  let g:airline#extensions#branch#prefix     = '⤴' "➔, ➥, ⎇
-  let g:airline#extensions#readonly#symbol   = '⊘'
-  let g:airline#extensions#linecolumn#prefix = '¶'
-  let g:airline#extensions#paste#symbol      = 'ρ'
-  let g:airline_symbols.linenr    = '␊'
-  let g:airline_symbols.branch    = '⎇'
-  let g:airline_symbols.paste     = 'ρ'
-  let g:airline_symbols.paste     = 'Þ'
-  let g:airline_symbols.paste     = '∥'
-  let g:airline_symbols.whitespace = 'Ξ'
+    let g:airline#extensions#tabline#left_sep = ' '
+    let g:airline#extensions#tabline#left_alt_sep = '|'
+    let g:airline_left_sep          = '▶'
+    let g:airline_left_alt_sep      = '»'
+    let g:airline_right_sep         = '◀'
+    let g:airline_right_alt_sep     = '«'
+    let g:airline#extensions#branch#prefix     = '⤴' "➔, ➥, ⎇
+    let g:airline#extensions#readonly#symbol   = '⊘'
+    let g:airline#extensions#linecolumn#prefix = '¶'
+    let g:airline#extensions#paste#symbol      = 'ρ'
+    let g:airline_symbols.linenr    = '␊'
+    let g:airline_symbols.branch    = '⎇'
+    let g:airline_symbols.paste     = 'ρ'
+    let g:airline_symbols.paste     = 'Þ'
+    let g:airline_symbols.paste     = '∥'
+    let g:airline_symbols.whitespace = 'Ξ'
 else
-  let g:airline#extensions#tabline#left_sep = ''
-  let g:airline#extensions#tabline#left_alt_sep = ''
+    let g:airline#extensions#tabline#left_sep = ''
+    let g:airline#extensions#tabline#left_alt_sep = ''
 
-  " powerline symbols
-  let g:airline_left_sep = ''
-  let g:airline_left_alt_sep = ''
-  let g:airline_right_sep = ''
-  let g:airline_right_alt_sep = ''
-  let g:airline_symbols.branch = ''
-  let g:airline_symbols.readonly = ''
-  let g:airline_symbols.linenr = ''
+    " powerline symbols
+    let g:airline_left_sep = ''
+    let g:airline_left_alt_sep = ''
+    let g:airline_right_sep = ''
+    let g:airline_right_alt_sep = ''
+    let g:airline_symbols.branch = ''
+    let g:airline_symbols.readonly = ''
+    let g:airline_symbols.linenr = ''
 endif
 
 " ====================== startify ====================
@@ -617,16 +617,16 @@ let g:startify_session_autoload = 1
 "             \ '|     Keep an open mind!       |',
 "             \ '+----------------+-------------+',
 "             \]
-"             
+"
 
 " ========================== CtrlP ====================
 if executable('ag')
-  " Use Ag over Grep
-  set grepprg=ag\ --nogroup\ --nocolor
-  " Use ag in CtrlP for listing files.
-  let g:ctrlp_user_command = 'ag %s -l --nocolor -g ""'
-  " Ag is fast enough that CtrlP doesn't need to cache
-  let g:ctrlp_use_caching = 0
+    " Use Ag over Grep
+    set grepprg=ag\ --nogroup\ --nocolor
+    " Use ag in CtrlP for listing files.
+    let g:ctrlp_user_command = 'ag %s -l --nocolor -g ""'
+    " Ag is fast enough that CtrlP doesn't need to cache
+    let g:ctrlp_use_caching = 0
 endif
 
 let g:ctrlp_map = '<c-p>'
@@ -641,9 +641,9 @@ let g:ctrlp_follow_symlinks=1
 imap <C-A> <C-C><c-p>
 
 let g:ctrlp_custom_ignore = {
-    \ 'dir':  '\v[\/](node_modules)|(\.(git|hg|svn|rvm))$',
-    \ 'file': '\v\.(exe|so|dll)$',
-    \ }
+            \ 'dir':  '\v[\/](node_modules)|(\.(git|hg|svn|rvm))$',
+            \ 'file': '\v\.(exe|so|dll)$',
+            \ }
 
 " =============================tagbar=================================
 "
@@ -660,8 +660,8 @@ let g:SuperTabRetainCompletionType="context"
 " Set encoding to UTF-8 to show glyphs
 set encoding=utf-8
 " Set Vim font to a Nerd Font
-"set guifont=Droid\ Sans\ Mono\ for\ Powerline\ Plus\ Nerd\ File\ Types\ 11 " linux
-" set guifont=Droid\ Sans\ Mono\ for\ Powerline\ Plus\ Nerd\ File\ Types:h11 " mac
+"set guifont=Droid\ Sans\ Mono\ for\ Powerline\ Plus\ Nerd\ File\ Types\ 11    " linux
+" set guifont=Droid\ Sans\ Mono\ for\ Powerline\ Plus\ Nerd\ File\ Types:h11    " mac
 " If you use vim-airline you need this
 " let g:airline_powerline_fonts = 1
 
@@ -678,14 +678,14 @@ let g:neocomplete#lock_buffer_name_pattern = '\*ku\*'
 
 " Define dictionary.
 let g:neocomplete#sources#dictionary#dictionaries = {
-     \ 'default' : '',
-     \ 'vimshell' : $HOME.'/.vimshell_hist',
-     \ 'scheme' : $HOME.'/.gosh_completions'
-	 \ }
+            \ 'default' : '',
+            \ 'vimshell' : $HOME.'/.vimshell_hist',
+            \ 'scheme' : $HOME.'/.gosh_completions'
+            \ }
 
 " Define keyword.
 if !exists('g:neocomplete#keyword_patterns')
-	let g:neocomplete#keyword_patterns = {}
+    let g:neocomplete#keyword_patterns = {}
 endif
 let g:neocomplete#keyword_patterns['default'] ='\h\w*'
 
@@ -697,9 +697,9 @@ inoremap <expr><C-l>    neocomplete#complete_common_string()
 " <CR>: close popup and save indent.
 inoremap <silent> <CR> <C-r>=<SID>my_cr_function()<CR>
 function! s:my_cr_function()
-	return (pumvisible() ? "\<C-y>" : "" ) . "\<CR>"
-  " For no inserting <CR> key.
-  "return pumvisible() ? "\<C-y>" : "\<CR>"
+    return (pumvisible() ? "\<C-y>" : "" ) . "\<CR>"
+    " For no inserting <CR> key.
+    "return pumvisible() ? "\<C-y>" : "\<CR>"
 endfunction
 " <TAB>: completion.
 inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
@@ -716,7 +716,7 @@ autocmd FileType xml setlocal omnifunc=xmlcomplete#CompleteTags
 
 " Enable heavy omni completion.
 if !exists('g:neocomplete#sources#omni#input_patterns')
-	let g:neocomplete#sources#omni#input_patterns = {}
+    let g:neocomplete#sources#omni#input_patterns = {}
 endif
 
 let g:neocomplete#sources#omni#input_patterns.perl = '\h\w*->\h\w*\|\h\w*::'
@@ -728,15 +728,15 @@ let g:polyglot_disabled = ['python']
 " ============================YouCompleteMe===============================
 let g:ycm_python_binary_path = 'python'
 "离开插入模式后自动关闭预览窗口
-autocmd InsertLeave * if pumvisible() == 0|pclose|endif	
+autocmd InsertLeave * if pumvisible() == 0|pclose|endif
 " 跳转到定义处
 nnoremap <leader>jd :YcmCompleter GoToDefinitionElseDeclaration<CR>
 nnoremap <leader>jl :YcmCompleter GoToDeclaration<CR>
 nnoremap <leader>jf :YcmCompleter GoToDefinition<CR>
 "force recomile with syntastic
-nnoremap <F6> :YcmForceCompileAndDiagnostics<CR>	
-" nnoremap <leader>lo :lopen<CR>	"open locationlist
-" nnoremap <leader>lc :lclose<CR>	"close locationlist
+nnoremap <F6> :YcmForceCompileAndDiagnostics<CR>
+" nnoremap <leader>lo :lopen<CR>    "open locationlist
+" nnoremap <leader>lc :lclose<CR>   "close locationlist
 nmap <leader>gd :YcmDiags<CR>
 inoremap <leader><leader> <C-x><C-o>
 if g:vim_bootstrap_editor == 'nvim'
@@ -744,9 +744,9 @@ if g:vim_bootstrap_editor == 'nvim'
 else
     let g:ycm_global_ycm_extra_conf = '~/.vim/plugged/YouCompleteMe/third_party/ycmd/cpp/ycm/.ycm_extra_conf.py'
 endif
-" 不显示开启vim时检查ycm_extra_conf文件的信息  
+" 不显示开启vim时检查ycm_extra_conf文件的信息
 let g:ycm_confirm_extra_conf=0
-" 开启基于tag的补全，可以在这之后添加需要的标签路径  
+" 开启基于tag的补全，可以在这之后添加需要的标签路径
 let g:ycm_collect_identifiers_from_tags_files=1
 "注释和字符串中的文字也会被收入补全
 let g:ycm_collect_identifiers_from_comments_and_strings = 0
@@ -755,18 +755,18 @@ let g:ycm_min_num_of_chars_for_completion=2
 " 禁止缓存匹配项,每次都重新生成匹配项
 let g:ycm_cache_omnifunc=0
 " 开启语义补全
-let g:ycm_seed_identifiers_with_syntax=1	
+let g:ycm_seed_identifiers_with_syntax=1
 "在注释输入中也能补全
 let g:ycm_complete_in_comments = 1
 "在字符串输入中也能补全
 let g:ycm_complete_in_strings = 1
 " 设置在下面几种格式的文件上屏蔽ycm
 let g:ycm_filetype_blacklist = {
-      \ 'tagbar' : 1,
-      \ 'nerdtree' : 1,
-      \}
+            \ 'tagbar' : 1,
+            \ 'nerdtree' : 1,
+            \}
 " python has its own check engine
-let g:syntastic_ignore_files = [".*\.py$"] 
+let g:syntastic_ignore_files = [".*\.py$"]
 
 " ====================== snippet ======================
 let g:UltiSnipsExpandTrigger="<leader><tab>"
@@ -774,7 +774,7 @@ let g:UltiSnipsJumpForwardTrigger="<c-b>"
 let g:UltiSnipsJumpBackwardTrigger="<c-z>"
 let g:UltiSnipsEditSplit="vertical"
 
-" ======================= syntastic ====================== 
+" ======================= syntastic ======================
 let g:syntastic_always_populate_loc_list=1
 let g:syntastic_error_symbol='✗'
 let g:syntastic_warning_symbol='⚠'
@@ -844,7 +844,7 @@ let g:doxygen_enhanced_color = 1
 " let g:DoxygenToolkit_templateParamTag_pre = "\\tparam "
 " let g:DoxygenToolkit_paramTag_pre = "\\param "
 " let g:DoxygenToolkit_returnTag = "\\return "
-" let g:DoxygenToolkit_throwTag_pre = "\\throw " " @exception is also valid
+" let g:DoxygenToolkit_throwTag_pre = "\\throw "    " @exception is also valid
 " let g:DoxygenToolkit_fileTag = "\\file "
 " let g:DoxygenToolkit_dateTag = "\\date "
 " let g:DoxygenToolkit_authorTag = "\\author "
@@ -858,9 +858,9 @@ let g:doxygen_enhanced_color = 1
 " nnoremap <leader>sd :DeleteSession<CR>
 " nnoremap <leader>sc :CloseSession<CR>
 
-" ==============================CTags==================================  
-"设置tags  
-set tags=tags;  
+" ==============================CTags==================================
+"设置tags
+set tags=tags;
 set autochdir
 " 按下F5重新生成tag文件，并更新taglist
 map <F5> :!ctags -R --c++-kinds=+p --fields=+iaS --extra=+q .<CR><CR> :TlistUpdate<CR>
@@ -877,32 +877,32 @@ imap <F5> <ESC>:!ctags -R --c++-kinds=+p --fields=+iaS --extra=+q .<CR><CR> :Tli
 " let Tlist_Process_File_Always=1 "实时更新tags, 不管taglist窗口有没有打开
 " let Tlist_Inc_Winwidth=0
 " let Tlist_Use_SingleClick= 1  "缺省情况下，在双击一个tag时，才会跳到该tag定义的位置
-" let Tlist_Sort_Type="name"   " tag按名字排序
+" let Tlist_Sort_Type="name"    " tag按名字排序
 " let Tlist_Compart_Format = 1    " 压缩方式
 " nnoremap <silent> <leader>tl :TlistToggle<CR>
 
 "==========================Quick Run=============================
 map <F5> :call CompileRunGcc()<CR>
 func! CompileRunGcc()
-	exec "w"
-	if &filetype == 'c'
-		exec "!g++ % -o %<"
-		exec "!time ./%<"
-	elseif &filetype =='cpp'
-		exec "!g++ % -o %<"
-		exec "!time ./%<"
-	elseif &filetype == 'java'
-		exec "!javac %"
-		exec "!time java %<"
-	elseif &filetype == 'sh'
-		:!time bash %
-	elseif &filetype == 'python'
-		exec "!time python2.7 %"
-	elseif &filetype == 'html'
-		exec "!firefox % &"
-	elseif &filetype == 'go'
-		" exec "!go build %<"
-		exec "!time go run %"
-	endif
+    exec "w"
+    if &filetype == 'c'
+        exec "!g++ % -o %<"
+        exec "!time ./%<"
+    elseif &filetype =='cpp'
+        exec "!g++ % -o %<"
+        exec "!time ./%<"
+    elseif &filetype == 'java'
+        exec "!javac %"
+        exec "!time java %<"
+    elseif &filetype == 'sh'
+        :!time bash %
+    elseif &filetype == 'python'
+        exec "!time python2.7 %"
+    elseif &filetype == 'html'
+        exec "!firefox % &"
+    elseif &filetype == 'go'
+        " exec "!go build %<"
+        exec "!time go run %"
+    endif
 endfunc
 
