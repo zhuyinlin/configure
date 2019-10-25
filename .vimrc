@@ -58,11 +58,10 @@ Plug 'mhinz/vim-startify'
 Plug 'nathanaelkane/vim-indent-guides'
 
 "" search
-Plug 'ctrlpvim/ctrlp.vim'
 if isdirectory('/usr/local/opt/fzf')
     Plug '/usr/local/opt/fzf' | Plug 'junegunn/fzf.vim'
 else
-    Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --bin' }
+    Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
     Plug 'junegunn/fzf.vim'
 endif
 "" terminal?
@@ -80,26 +79,35 @@ Plug 'ervandew/supertab'
 Plug 'ryanoasis/vim-devicons'    " must be loaded after Nerdtree, powerline ...
 
 "auto complete
-Plug 'Shougo/neocomplete.vim'
-Plug 'sheerun/vim-polyglot'
+if has('nvim')
+  Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
+else
+  Plug 'Shougo/deoplete.nvim'
+  Plug 'roxma/nvim-yarp'
+  Plug 'roxma/vim-hug-neovim-rpc'
+endif
+
+Plug 'sheerun/vim-polyglot'    " 多种语言的语法高亮包, 详情查看官网。
+                               " 注意并不一定提供所包含插件的完整功能
 Plug 'Valloric/YouCompleteMe'
 if v:version >= 704
     "" Snippets
     Plug 'SirVer/ultisnips'
 endif
-Plug 'honza/vim-snippets'
+Plug 'honza/vim-snippets'    " for ultisnips
 " Plug 'drmingdrmer/xptemplate'
 Plug 'vim-scripts/DoxygenToolkit.vim'
 
 " syntax
 Plug 'vim-syntastic/syntastic'
-Plug 'w0rp/ale'
+Plug 'w0rp/ale'    " async lint engine, 需要安装相应linter
 
 " coding
 if v:version >= 800
+    " gtags相关
     Plug 'ludovicchabant/vim-gutentags'    "索引自动管理
     Plug 'skywind3000/gutentags_plus'    "索引数据库切换
-    Plug 'skywind3000/vim-preview'    "索引预览
+    " Plug 'skywind3000/vim-preview'    "索引预览
 endif
 Plug 'jiangmiao/auto-pairs'
 " Plug 'Townk/vim-autoclose'
@@ -121,6 +129,9 @@ Plug 'suan/vim-instant-markdown'
 Plug 'Rykka/riv.vim'
 Plug 'Rykka/InstantRst'
 
+" Latex
+Plug 'lervag/vimtex'
+
 " python
 "" Python Bundle
 Plug 'davidhalter/jedi-vim'
@@ -128,7 +139,7 @@ Plug 'python-mode/python-mode'
 " Plug 'raimon49/requirements.txt.vim', {'for': 'requirements'}
 
 " c / c++
-Plug 'vim-scripts/c.vim', {'for': ['c', 'cpp', 'h', 'txx']}
+" Plug 'vim-scripts/c.vim', {'for': ['c', 'cpp', 'h', 'txx']}     " <C-J>快捷键冲突
 Plug 'ludwig/split-manpage.vim'
 Plug 'vim-scripts/a.vim'    " Alternate Files quickly (.c --> .h etc)
 
@@ -634,31 +645,8 @@ let g:startify_session_autoload = 1
 "             \ '+----------------+-------------+',
 "             \]
 
-" ========================== CtrlP ==========================
-if executable('ag')
-    " Use Ag over Grep
-    set grepprg=ag\ --nogroup\ --nocolor
-    " Use ag in CtrlP for listing files.
-    let g:ctrlp_user_command = 'ag %s -l --nocolor -g ""'
-    " Ag is fast enough that CtrlP doesn't need to cache
-    let g:ctrlp_use_caching = 0
-endif
-
-let g:ctrlp_map = '<c-p>'
-let g:ctrlp_custom_ignore = '\.git$\|\.hg$\|\.svn$\|.rvm$'
-let g:ctrlp_working_path_mode='ra' "0
-let g:ctrlp_match_window_bottom=1
-let g:ctrlp_max_height=15
-let g:ctrlp_match_window_reversed=0
-let g:ctrlp_mruf_max=500
-let g:ctrlp_follow_symlinks=1
-"use in  edit
-imap <C-A> <C-C><c-p>
-
-let g:ctrlp_custom_ignore = {
-            \ 'dir':  '\v[\/](node_modules)|(\.(git|hg|svn|rvm))$',
-            \ 'file': '\v\.(exe|so|dll)$',
-            \ }
+" ========================== fzf ==========================
+nnoremap <silent> <C-p> :Files<CR>
 
 " ========================== tagbar ==========================
 "
@@ -680,65 +668,13 @@ set encoding=utf-8
 " If you use vim-airline you need this
 " let g:airline_powerline_fonts = 1
 
-" ========================== neocomplete ==========================
-" Disable AutoComplPop.
-let g:acp_enableAtStartup = 0
-" Use neocomplete.
-let g:neocomplete#enable_at_startup = 1
-" Use smartcase.
-let g:neocomplete#enable_smart_case = 1
-" Set minimum syntax keyword length.
-let g:neocomplete#sources#syntax#min_keyword_length = 3
-let g:neocomplete#lock_buffer_name_pattern = '\*ku\*'
-
-" Define dictionary.
-let g:neocomplete#sources#dictionary#dictionaries = {
-            \ 'default' : '',
-            \ 'vimshell' : $HOME.'/.vimshell_hist',
-            \ 'scheme' : $HOME.'/.gosh_completions'
-            \ }
-
-" Define keyword.
-if !exists('g:neocomplete#keyword_patterns')
-    let g:neocomplete#keyword_patterns = {}
-endif
-let g:neocomplete#keyword_patterns['default'] ='\h\w*'
-
-" Plugin key-mappings.
-inoremap <expr><C-g>  neocomplete#undo_completion()
-inoremap <expr><C-l>  neocomplete#complete_common_string()
-
-" Recommended key-mappings.
-" <CR>: close popup and save indent.
-inoremap <silent> <CR> <C-r>=<SID>my_cr_function()<CR>
-function! s:my_cr_function()
-    return (pumvisible() ? "\<C-y>" : "" ) . "\<CR>"
-    " For no inserting <CR> key.
-    "return pumvisible() ? "\<C-y>" : "\<CR>"
-endfunction
-" <TAB>: completion.
-inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
-" <C-h>, <BS>: close popup and delete backword char.
-inoremap <expr><C-h> neocomplete#smart_close_popup()."\<C-h>"
-inoremap <expr><BS> neocomplete#smart_close_popup()."\<C-h>"
-
-" Enable omni completion.
-autocmd FileType css setlocal omnifunc=csscomplete#CompleteCSS
-autocmd FileType html,markdown setlocal omnifunc=htmlcomplete#CompleteTags
-autocmd FileType javascript setlocal omnifunc=javascriptcomplete#CompleteJS
-autocmd FileType python setlocal omnifunc=python3complete#Complete
-autocmd FileType xml setlocal omnifunc=xmlcomplete#CompleteTags
-
-" Enable heavy omni completion.
-if !exists('g:neocomplete#sources#omni#input_patterns')
-    let g:neocomplete#sources#omni#input_patterns = {}
-endif
-
-let g:neocomplete#sources#omni#input_patterns.perl = '\h\w*->\h\w*\|\h\w*::'
+" ========================== deoplete ==========================
+let g:deoplete#enable_at_startup = 1
 
 " ========================== vim-polyglot ==========================
 " Default highlight is better than polyglot
 let g:polyglot_disabled = ['python']
+let g:polyglot_disabled = ['latex']
 
 " ========================== YouCompleteMe ==========================
 let g:ycm_python_binary_path = 'python'
@@ -755,9 +691,9 @@ nnoremap <F6> :YcmForceCompileAndDiagnostics<CR>
 nmap <leader>gd :YcmDiags<CR>
 inoremap <leader><leader> <C-x><C-o>
 if g:vim_bootstrap_editor == 'nvim'
-    let g:ycm_global_ycm_extra_conf = '~/.local/share/nvim/plugged/YouCompleteMe/third_party/ycmd/cpp/ycm/.ycm_extra_conf.py'
+    let g:ycm_global_ycm_extra_conf = '~/.local/share/nvim/plugged/YouCompleteMe/third_party/ycmd/.ycm_extra_conf.py'
 else
-    let g:ycm_global_ycm_extra_conf = '~/.vim/plugged/YouCompleteMe/third_party/ycmd/cpp/ycm/.ycm_extra_conf.py'
+    let g:ycm_global_ycm_extra_conf = '~/.vim/plugged/YouCompleteMe/third_party/ycmd/.ycm_extra_conf.py'
 endif
 " 不显示开启vim时检查ycm_extra_conf文件的信息
 let g:ycm_confirm_extra_conf=0
@@ -783,10 +719,13 @@ let g:ycm_filetype_blacklist = {
 " python has its own check engine
 " let g:syntastic_ignore_files = [".*\.py$"]
 
-" ========================== snippet ==========================
+" ========================== ultisnips ==========================
+" Trigger configuration. Do not use <tab> if you use https://github.com/Valloric/YouCompleteMe.
 let g:UltiSnipsExpandTrigger="<leader><tab>"
 let g:UltiSnipsJumpForwardTrigger="<c-b>"
 let g:UltiSnipsJumpBackwardTrigger="<c-z>"
+
+" If you want :UltiSnipsEdit to split your window.
 let g:UltiSnipsEditSplit="vertical"
 
 " ========================== syntastic ==========================
@@ -811,7 +750,7 @@ let g:UltiSnipsEditSplit="vertical"
 
 " ========================== ale ==========================
 " 始终开启标志列
-let g:ale_fix_on_save = 1
+let g:ale_fix_on_save = 0
 let g:ale_completion_enabled = 1
 let g:ale_sign_column_always = 1
 " let g:airline#extensions#ale#enabled = 1
@@ -821,11 +760,21 @@ let g:ale_set_highlights = 0
 let g:ale_sign_error = '✗'
 let g:ale_sign_warning = '⚡'
 " 在vim自带的状态栏中整合ale
-let g:ale_statusline_format = ['✗ %d', '⚡ %d', '✔ OK']
+" let g:ale_statusline_format = ['✗ %d', '⚡ %d', '✔ OK']
 " 显示Linter名称,出错或警告等相关信息
 let g:ale_echo_msg_error_str = 'E'
 let g:ale_echo_msg_warning_str = 'W'
 let g:ale_echo_msg_format = '[%linter%] %s [%severity%]'
+" 文件内容发生变化时不检查
+" let g:ale_lint_on_text_changed = 'never'
+" 打开文件时不进行检查
+let g:ale_lint_on_enter = 0
+" 指定linter
+" let g:ale_linters = {
+"             \ 'c++': ['clang'],
+"             \ 'c': ['clang'],
+"             \ 'python': ['pylint'],
+" }
 " 普通模式下，sp前往上一个错误或警告，sn前往下一个错误或警告
 " nmap sp <Plug>(ale_previous_wrap)
 " nmap sn <Plug>(ale_next_wrap)
@@ -902,6 +851,7 @@ let g:doxygen_enhanced_color = 1
 " nnoremap <leader>sc :CloseSession<CR>
 
 " ========================== CTags and GTags ==========================
+" =====gutentags
 let g:gutentags_define_advanced_commands = 1
 let $GTAGSLABEL = 'native-pygments'
 let $GTAGSCONF = '/usr/local/share/gtags/gtags.conf'
@@ -913,10 +863,10 @@ let g:gutentags_ctags_tagfile = '.tags'
 " 同时开启 ctags 和 gtags 支持
 let g:gutentags_modules = []
 if executable('ctags')
-    let g:gutentags_modules += ['ctags']
+   let g:gutentags_modules += ['ctags']
 endif
 if executable('gtags-cscope') && executable('gtags')
-    let g:gutentags_modules += ['gtags_cscope']
+   let g:gutentags_modules += ['gtags_cscope']
 endif
 
 " 将自动生成的 ctags/gtags 文件全部放入 ~/.cache/tags 目录中，避免污染工程目录
@@ -941,6 +891,19 @@ let g:gutentags_ctags_extra_args += ['--output-format=e-ctags']
 " 使用plus插件解决问题
 let g:gutentags_auto_add_gtags_cscope = 0
 
+" =====gutentags_plus
+let g:gutentags_plus_nomap = 1  " 快捷键与nerdcommenter 冲突，这里重新定义
+noremap <silent> <leader>gs :GscopeFind s <C-R><C-W><cr>
+noremap <silent> <leader>gg :GscopeFind g <C-R><C-W><cr>
+noremap <silent> <leader>gd :GscopeFind d <C-R><C-W><cr>
+noremap <silent> <leader>gc :GscopeFind c <C-R><C-W><cr>
+noremap <silent> <leader>gt :GscopeFind t <C-R><C-W><cr>
+noremap <silent> <leader>ge :GscopeFind e <C-R><C-W><cr>
+noremap <silent> <leader>gf :GscopeFind f <C-R>=expand("<cfile>")<cr><cr>
+noremap <silent> <leader>gi :GscopeFind i <C-R>=expand("<cfile>")<cr><cr>
+noremap <silent> <leader>ga :GscopeFind a <C-R><C-W><cr>
+
+" =====vim-preview
 " 预览 quickfix 窗口 ctrl-w z 关闭
 " P 预览 大p关闭
 " autocmd FileType qf nnoremap <silent><buffer> <Leader>p :PreviewQuickfix<cr>
