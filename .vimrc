@@ -52,8 +52,9 @@ Plug 'Xuyuanp/nerdtree-git-plugin'
 Plug 'flazz/vim-colorschemes'
 " Plug 'tomasr/molokai'
 " Plug 'altercation/vim-colors-solarized'
-Plug 'vim-airline/vim-airline'
-Plug 'vim-airline/vim-airline-themes'
+" Plug 'vim-airline/vim-airline'
+" Plug 'vim-airline/vim-airline-themes'
+Plug 'itchyny/lightline.vim'
 Plug 'mhinz/vim-startify'
 Plug 'nathanaelkane/vim-indent-guides'
 
@@ -81,10 +82,12 @@ Plug 'ryanoasis/vim-devicons'    " must be loaded after Nerdtree, powerline ...
 "auto complete
 if has('nvim')
   Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
+  Plug 'deoplete-plugins/deoplete-jedi'
 else
   Plug 'Shougo/deoplete.nvim'
   Plug 'roxma/nvim-yarp'
   Plug 'roxma/vim-hug-neovim-rpc'
+  Plug 'deoplete-plugins/deoplete-jedi'
 endif
 
 Plug 'sheerun/vim-polyglot'    " 多种语言的语法高亮包, 详情查看官网。
@@ -559,59 +562,59 @@ noremap <Leader>gr :Gremove<CR>
 
 " ========================== airline ==========================
 "
-if isdirectory(expand("~/.vim/bundle/vim-airline-themes/"))
-    if !exists('g:airline_theme')
-        let g:airline_theme = 'solarized'
-    endif
-    if !exists('g:airline_powerline_fonts')
-        " Use the default set of separators with a few customizations
-        let g:airline_left_sep='›'     " Slightly fancier than '>'
-        let g:airline_right_sep='‹'    " Slightly fancier tha '<'
-        let g:airline_powerline_fonts = 1
-    endif
-endif
-let g:airline#extensions#syntastic#enabled = 1
-let g:airline#extensions#branch#enabled = 1
-let g:airline#extensions#tabline#enabled = 1
-let g:airline#extensions#tagbar#enabled = 1
-let g:airline_skip_empty_sections = 1
-let g:airline#extensions#virtualenv#enabled = 1
-
-"" Convenience variables
-if !exists('g:airline_symbols')
-    let g:airline_symbols = {}
-endif
-
-if !exists('g:airline_powerline_fonts')
-    let g:airline#extensions#tabline#left_sep = ' '
-    let g:airline#extensions#tabline#left_alt_sep = '|'
-    let g:airline_left_sep = '▶'
-    let g:airline_left_alt_sep = '»'
-    let g:airline_right_sep = '◀'
-    let g:airline_right_alt_sep = '«'
-    let g:airline#extensions#branch#prefix = '⤴'    " ➔, ➥, ⎇
-    let g:airline#extensions#readonly#symbol = '⊘'
-    let g:airline#extensions#linecolumn#prefix = '¶'
-    let g:airline#extensions#paste#symbol = 'ρ'
-    let g:airline_symbols.linenr = '␊'
-    let g:airline_symbols.branch = '⎇'
-    let g:airline_symbols.paste = 'ρ'
-    let g:airline_symbols.paste = 'Þ'
-    let g:airline_symbols.paste = '∥'
-    let g:airline_symbols.whitespace = 'Ξ'
-else
-    let g:airline#extensions#tabline#left_sep = ''
-    let g:airline#extensions#tabline#left_alt_sep = ''
-
-    " powerline symbols
-    let g:airline_left_sep = ''
-    let g:airline_left_alt_sep = ''
-    let g:airline_right_sep = ''
-    let g:airline_right_alt_sep = ''
-    let g:airline_symbols.branch = ''
-    let g:airline_symbols.readonly = ''
-    let g:airline_symbols.linenr = ''
-endif
+" if isdirectory(expand("~/.vim/bundle/vim-airline-themes/"))
+"     if !exists('g:airline_theme')
+"         let g:airline_theme = 'solarized'
+"     endif
+"     if !exists('g:airline_powerline_fonts')
+"         " Use the default set of separators with a few customizations
+"         let g:airline_left_sep='›'     " Slightly fancier than '>'
+"         let g:airline_right_sep='‹'    " Slightly fancier tha '<'
+"         let g:airline_powerline_fonts = 1
+"     endif
+" endif
+" let g:airline#extensions#syntastic#enabled = 1
+" let g:airline#extensions#branch#enabled = 1
+" let g:airline#extensions#tabline#enabled = 1
+" let g:airline#extensions#tagbar#enabled = 1
+" let g:airline_skip_empty_sections = 1
+" let g:airline#extensions#virtualenv#enabled = 1
+"
+" "" Convenience variables
+" if !exists('g:airline_symbols')
+"     let g:airline_symbols = {}
+" endif
+"
+" if !exists('g:airline_powerline_fonts')
+"     let g:airline#extensions#tabline#left_sep = ' '
+"     let g:airline#extensions#tabline#left_alt_sep = '|'
+"     let g:airline_left_sep = '▶'
+"     let g:airline_left_alt_sep = '»'
+"     let g:airline_right_sep = '◀'
+"     let g:airline_right_alt_sep = '«'
+"     let g:airline#extensions#branch#prefix = '⤴'    " ➔, ➥, ⎇
+"     let g:airline#extensions#readonly#symbol = '⊘'
+"     let g:airline#extensions#linecolumn#prefix = '¶'
+"     let g:airline#extensions#paste#symbol = 'ρ'
+"     let g:airline_symbols.linenr = '␊'
+"     let g:airline_symbols.branch = '⎇'
+"     let g:airline_symbols.paste = 'ρ'
+"     let g:airline_symbols.paste = 'Þ'
+"     let g:airline_symbols.paste = '∥'
+"     let g:airline_symbols.whitespace = 'Ξ'
+" else
+"     let g:airline#extensions#tabline#left_sep = ''
+"     let g:airline#extensions#tabline#left_alt_sep = ''
+"
+"     " powerline symbols
+"     let g:airline_left_sep = ''
+"     let g:airline_left_alt_sep = ''
+"     let g:airline_right_sep = ''
+"     let g:airline_right_alt_sep = ''
+"     let g:airline_symbols.branch = ''
+"     let g:airline_symbols.readonly = ''
+"     let g:airline_symbols.linenr = ''
+" endif
 
 " ========================== startify ==========================
 if g:vim_bootstrap_editor == 'vim'
@@ -670,6 +673,7 @@ set encoding=utf-8
 
 " ========================== deoplete ==========================
 let g:deoplete#enable_at_startup = 1
+set completeopt+=noinsert
 
 " ========================== vim-polyglot ==========================
 " Default highlight is better than polyglot
